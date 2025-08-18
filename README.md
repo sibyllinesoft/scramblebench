@@ -12,10 +12,10 @@
 
 **ScrambleBench solves this problem completely.** By transforming existing benchmarks into novel forms that preserve logical structure while eliminating memorization advantages, you get reliable evaluation results you can trust. Whether you're:
 
-- 🔬 **Researchers** needing clean evaluation data for papers
-- 🏢 **Enterprises** selecting models for production deployments  
-- 🚀 **Startups** optimizing AI systems for specific tasks
-- 🎓 **Academics** studying model capabilities without contamination bias
+- <kbd>microscope</kbd> **Researchers** needing clean evaluation data for papers
+- <kbd>building-2</kbd> **Enterprises** selecting models for production deployments  
+- <kbd>rocket</kbd> **Startups** optimizing AI systems for specific tasks
+- <kbd>graduation-cap</kbd> **Academics** studying model capabilities without contamination bias
 
 ScrambleBench provides the contamination-resistant evaluation framework you need.
 
@@ -23,8 +23,8 @@ ScrambleBench provides the contamination-resistant evaluation framework you need
 
 ScrambleBench uses two revolutionary approaches to eliminate training data contamination:
 
-1. **🌍 Translation Benchmarks**: Transform problems into systematically constructed languages that preserve logical structure while making memorization impossible
-2. **📚 Long Context Benchmarks**: Intelligently modify documents and Q&A pairs through translation and transformation while maintaining semantic content
+1. **<kbd>globe</kbd> Translation Benchmarks**: Transform problems into systematically constructed languages that preserve logical structure while making memorization impossible
+2. **<kbd>book-open</kbd> Long Context Benchmarks**: Intelligently modify documents and Q&A pairs through translation and transformation while maintaining semantic content
 
 **The result?** Clean, reliable benchmarks that measure true model reasoning rather than memorization.
 
@@ -97,38 +97,38 @@ print(f"True model accuracy: {result.score:.2%}")
 
 ## Features
 
-### 🌍 Translation Benchmarks
+### <kbd>globe</kbd> Translation Benchmarks
 - **Constructed Language Generation**: Create systematic artificial languages with varying complexity
 - **Problem Translation**: Transform benchmark problems while maintaining solvability
 - **Multiple Language Types**: Substitution, phonetic, scrambled, and synthetic languages
 - **Translation Key Export**: Full mapping for verification and analysis
 
-### 📚 Long Context Benchmarks  
+### <kbd>book-open</kbd> Long Context Benchmarks  
 - **Document Transformation**: Multiple strategies (translation, paraphrase, structural reordering)
 - **Q&A Alignment**: Intelligent transformation of questions and answers to match document changes
 - **Preservation Controls**: Configurable preservation of numbers, entities, and structure
 - **Answer Type Support**: Extractive, abstractive, multiple choice, and more
 
-### 🔧 LLM Integration
+### <kbd>plug</kbd> LLM Integration
 - **OpenRouter Support**: Access to 100+ models through unified API
 - **Model Interface**: Standardized interface for any LLM provider  
 - **Rate Limiting**: Built-in rate limiting and retry logic
 - **Async Support**: Efficient batch processing and concurrent evaluation
 
-### 📊 Evaluation Pipeline
+### <kbd>bar-chart-3</kbd> Evaluation Pipeline
 - **Comprehensive Robustness Testing**: End-to-end evaluation with transformation-based testing
 - **Multi-Model Support**: Evaluate multiple LLMs simultaneously via OpenRouter API
 - **Statistical Analysis**: Accuracy, robustness, and significance testing
 - **Rich Visualizations**: Model comparisons, degradation analysis, interactive dashboards
 - **Results Management**: Structured storage, experiment tracking, and comparison tools
 
-### ⚙️ Configuration & Data
+### <kbd>settings</kbd> Configuration & Data
 - **Flexible Configuration**: YAML-based config with environment variable support
 - **Multiple Data Formats**: JSON, JSONL, CSV, Parquet, HuggingFace datasets
 - **Intelligent Caching**: Automatic caching for improved performance
 - **Extensible Loaders**: Easy integration of custom data sources
 
-### 🖥️ Command Line Interface
+### <kbd>terminal</kbd> Command Line Interface
 - **Comprehensive CLI**: Full-featured command-line interface with Click framework
 - **Language Management**: Generate, list, and manage constructed languages
 - **Batch Processing**: Extract vocabularies and transform benchmark datasets  

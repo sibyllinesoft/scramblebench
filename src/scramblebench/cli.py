@@ -83,7 +83,7 @@ def echo_info(message: str, ctx: CLIContext):
         if ctx.output_format == "json":
             click.echo(json.dumps({"status": "info", "message": message}))
         else:
-            rprint(f"[blue]ℹ[/blue] {message}")
+            rprint(f"[blue][Info][/blue] {message}")
 
 
 def validate_language_type(ctx, param, value):

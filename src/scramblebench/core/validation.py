@@ -546,12 +546,12 @@ class ComprehensiveValidator:
         )
         
         if result.passed:
-            self.logger.info("✅ All critical validation checks passed")
+            self.logger.info("[CHECK] All critical validation checks passed")
         else:
-            self.logger.error(f"❌ Validation failed with {critical_count} critical issues")
+            self.logger.error(f"[X] Validation failed with {critical_count} critical issues")
         
         if warning_count > 0:
-            self.logger.warning(f"⚠️  {warning_count} warnings found")
+            self.logger.warning(f"[WARNING] {warning_count} warnings found")
         
         return result
     
@@ -563,9 +563,9 @@ class ComprehensiveValidator:
         lines.append("")
         
         if result.passed:
-            lines.append("✅ STATUS: PASSED")
+            lines.append("[CHECK] STATUS: PASSED")
         else:
-            lines.append("❌ STATUS: FAILED")
+            lines.append("[X] STATUS: FAILED")
         
         lines.append("")
         lines.append(f"Summary:")
@@ -580,9 +580,9 @@ class ComprehensiveValidator:
             
             for issue in result.issues:
                 severity_icon = {
-                    ValidationSeverity.CRITICAL: "🚨",
-                    ValidationSeverity.WARNING: "⚠️",
-                    ValidationSeverity.INFO: "ℹ️"
+                    ValidationSeverity.CRITICAL: "[ALERT]",
+                    ValidationSeverity.WARNING: "[WARNING]",
+                    ValidationSeverity.INFO: "[INFO]"
                 }[issue.severity]
                 
                 lines.append(f"{severity_icon} [{issue.severity.value.upper()}] {issue.category}: {issue.message}")

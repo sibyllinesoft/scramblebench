@@ -220,9 +220,9 @@ class ReleaseManager:
         
         try:
             self.run_command(["poetry", "run", "pytest", "-v"], capture_output=False)
-            self.logger.info("✅ All tests passed")
+            self.logger.info("[CHECK] All tests passed")
         except subprocess.CalledProcessError:
-            self.logger.error("❌ Tests failed")
+            self.logger.error("[X] Tests failed")
             if not self.dry_run:
                 raise
     
@@ -239,9 +239,9 @@ class ReleaseManager:
         for cmd, description in checks:
             try:
                 self.run_command(cmd)
-                self.logger.info(f"✅ {description} passed")
+                self.logger.info(f"[CHECK] {description} passed")
             except subprocess.CalledProcessError:
-                self.logger.error(f"❌ {description} failed")
+                self.logger.error(f"[X] {description} failed")
                 if not self.dry_run:
                     raise
     
@@ -256,7 +256,7 @@ class ReleaseManager:
             shutil.rmtree(dist_dir)
         
         self.run_command(["poetry", "build"])
-        self.logger.info("✅ Package built successfully")
+        self.logger.info("[CHECK] Package built successfully")
     
     def create_git_tag(self, version: str) -> None:
         """Create and push git tag."""
@@ -271,7 +271,7 @@ class ReleaseManager:
         
         # Push tag
         self.run_command(["git", "push", "origin", tag_name])
-        self.logger.info(f"✅ Tag {tag_name} created and pushed")
+        self.logger.info(f"[CHECK] Tag {tag_name} created and pushed")
     
     def commit_release_changes(self, version: str) -> None:
         """Commit release-related changes."""
@@ -291,7 +291,7 @@ class ReleaseManager:
         
         # Push changes
         self.run_command(["git", "push", "origin", "main"])
-        self.logger.info("✅ Release changes committed and pushed")
+        self.logger.info("[CHECK] Release changes committed and pushed")
     
     def publish_to_pypi(self, test: bool = False) -> None:
         """Publish package to PyPI."""
@@ -302,7 +302,7 @@ class ReleaseManager:
             self.logger.info("Publishing to PyPI...")
             self.run_command(["poetry", "publish"])
         
-        self.logger.info("✅ Package published successfully")
+        self.logger.info("[CHECK] Package published successfully")
     
     def create_github_release(self, version: str, commits: List[Dict[str, str]]) -> None:
         """Create GitHub release."""
@@ -323,7 +323,7 @@ class ReleaseManager:
                 "--notes", release_notes,
                 "dist/*"
             ])
-            self.logger.info("✅ GitHub release created")
+            self.logger.info("[CHECK] GitHub release created")
         except subprocess.CalledProcessError:
             self.logger.warning("Could not create GitHub release (gh CLI not available)")
     
@@ -335,7 +335,7 @@ class ReleaseManager:
         test_pypi: bool = False
     ) -> str:
         """Perform a full release."""
-        self.logger.info(f"🚀 Starting release process (bump: {bump_type})")
+        self.logger.info(f"[ROCKET] Starting release process (bump: {bump_type})")
         
         try:
             # Pre-release checks
@@ -369,11 +369,11 @@ class ReleaseManager:
             # Create GitHub release
             self.create_github_release(new_version, commits)
             
-            self.logger.info(f"🎉 Release {new_version} completed successfully!")
+            self.logger.info(f"[PARTY] Release {new_version} completed successfully!")
             return new_version
             
         except Exception as e:
-            self.logger.error(f"❌ Release failed: {str(e)}")
+            self.logger.error(f"[X] Release failed: {str(e)}")
             if not self.dry_run:
                 raise
 
@@ -409,20 +409,20 @@ def main():
             test_pypi=args.test_pypi
         )
         
-        print(f"\n🎉 Release {version} completed successfully!")
+        print(f"\n[PARTY] Release {version} completed successfully!")
         
         if not args.dry_run:
-            print("\n📋 Next steps:")
+            print("\n[CLIPBOARD] Next steps:")
             print("1. Check that the release appears on GitHub")
             print("2. Verify the package on PyPI")
             print("3. Update documentation if needed")
             print("4. Announce the release!")
         
     except KeyboardInterrupt:
-        print("\n❌ Release cancelled by user")
+        print("\n[X] Release cancelled by user")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Release failed: {str(e)}")
+        print(f"\n[X] Release failed: {str(e)}")
         sys.exit(1)
 
 
