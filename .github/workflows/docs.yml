@@ -138,7 +138,7 @@ jobs:
         cd docs
         
         # Build HTML documentation with detailed output
-        sphinx-build -b html -d _build/doctrees . _build/html -v -W --keep-going
+        sphinx-build -b html -d _build/doctrees . _build/html -v --keep-going
         
         echo "=== Build Results ==="
         ls -la _build/

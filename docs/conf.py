@@ -114,10 +114,10 @@ html_meta = {
 
 # Enhanced HTML context for better GitHub integration
 html_context.update({
-    'github_url': 'https://github.com/nathanrice/scramblebench',
+    'github_url': 'https://github.com/sibyllinesoft/scramblebench',
     'edit_page': True,
-    'source_url_prefix': 'https://github.com/nathanrice/scramblebench/blob/main/',
-    'edit_url_prefix': 'https://github.com/nathanrice/scramblebench/edit/main/',
+    'source_url_prefix': 'https://github.com/sibyllinesoft/scramblebench/blob/main/',
+    'edit_url_prefix': 'https://github.com/sibyllinesoft/scramblebench/edit/main/',
 })
 
 # Custom sidebar templates
