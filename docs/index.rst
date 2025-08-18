@@ -29,6 +29,16 @@ Modern LLMs are trained on massive datasets that likely contain your evaluation 
 - 🔬 **Reproducible Research**: Publish results that aren't invalidated by data contamination
 - 💰 **ROI Protection**: Avoid deploying overrated models that fail in production
 
+📊 **Performance Tracking & Optimization**
+
+ScrambleBench includes built-in performance monitoring and optimization features:
+
+- **Real-time Metrics**: Token usage, latency, and cost tracking per evaluation
+- **Intelligent Caching**: Avoid redundant API calls with semantic cache matching  
+- **Batch Processing**: Evaluate multiple models and datasets simultaneously
+- **Rate Limiting**: Automatic throttling to respect API limits and optimize costs
+- **Progress Tracking**: Detailed progress bars and ETA estimates for long evaluations
+
 🚀 **Shocking Results: See How Models Really Perform**
 
 **Real Example - Mathematical Reasoning:**
@@ -80,7 +90,7 @@ Installation
 .. code-block:: bash
 
    # Clone the repository
-   git clone https://github.com/nathanrice/scramblebench.git
+   git clone https://github.com/sibyllinesoft/scramblebench.git
    cd scramblebench
 
    # Install with uv (recommended)
@@ -240,8 +250,8 @@ Community and Support
 ====================
 
 - **Documentation**: Comprehensive guides and API reference
-- **Issues**: `GitHub Issues <https://github.com/nathanrice/scramblebench/issues>`_
-- **Discussions**: `GitHub Discussions <https://github.com/nathanrice/scramblebench/discussions>`_
+- **Issues**: `GitHub Issues <https://github.com/sibyllinesoft/scramblebench/issues>`_
+- **Discussions**: `GitHub Discussions <https://github.com/sibyllinesoft/scramblebench/discussions>`_
 - **Contributing**: See :doc:`development/contributing`
 
 License
@@ -260,5 +270,5 @@ If you use ScrambleBench in your research, please cite:
      title={ScrambleBench: Contamination-Resistant LLM Evaluation Through Constructed Languages},
      author={Rice, Nathan},
      year={2024},
-     url={https://github.com/nathanrice/scramblebench}
+     url={https://github.com/sibyllinesoft/scramblebench}
    }

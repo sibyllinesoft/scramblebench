@@ -92,7 +92,7 @@ html_theme_options = {
 
 html_context = {
     "display_github": True,
-    "github_user": "nathanrice",
+    "github_user": "sibyllinesoft",
     "github_repo": "scramblebench",
     "github_version": "main",
     "conf_py_path": "/docs/",
@@ -143,9 +143,12 @@ html_show_copyright = True
 
 # Additional CSS and JS files
 html_css_files.extend([
-    # Add more CSS files as needed
-    # 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
+    # Modern fonts for better typography
+    'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap',
 ])
+
+# Favicon configuration  
+html_favicon = '_static/favicon.ico'
 
 html_js_files = [
     # Custom JavaScript for enhanced functionality
