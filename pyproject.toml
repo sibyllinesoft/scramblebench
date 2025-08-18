@@ -26,7 +26,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "openrouter-python>=0.1.0",
+    "openai>=1.0.0",
     "transformers>=4.30.0",
     "datasets>=2.14.0",
     "torch>=2.0.0",
@@ -77,10 +77,10 @@ nlp = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/nathanrice/scramblebench"
-Repository = "https://github.com/nathanrice/scramblebench"
-Documentation = "https://github.com/nathanrice/scramblebench#readme"
-"Bug Tracker" = "https://github.com/nathanrice/scramblebench/issues"
+Homepage = "https://github.com/sibyllinesoft/scramblebench"
+Repository = "https://github.com/sibyllinesoft/scramblebench"
+Documentation = "https://github.com/sibyllinesoft/scramblebench#readme"
+"Bug Tracker" = "https://github.com/sibyllinesoft/scramblebench/issues"
 
 [project.scripts]
 scramblebench = "scramblebench.cli:main"

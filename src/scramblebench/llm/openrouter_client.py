@@ -530,9 +530,11 @@ from pathlib import Path
 import os
 
 try:
-    import openrouter
+    from openai import OpenAI
+    openai_available = True
 except ImportError:
-    openrouter = None
+    OpenAI = None
+    openai_available = False
 
 import aiohttp
 import asyncio
