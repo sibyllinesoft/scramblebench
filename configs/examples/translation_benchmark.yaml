@@ -1,0 +1,39 @@
+# Example configuration for translation benchmarks
+# This configuration is optimized for running translation benchmarks
+# with constructed languages
+
+# Inherit from default configuration
+benchmark:
+  random_seed: 12345
+  evaluation_mode: "fuzzy_match"
+  evaluation_threshold: 0.85
+  preserve_numbers: true
+  preserve_proper_nouns: false  # Allow translation of proper nouns for more challenging benchmark
+
+# Translation-specific settings
+translation:
+  # Type of constructed language to generate
+  # Options: substitution, phonetic, scrambled, synthetic
+  language_type: "substitution"
+  
+  # Complexity level of the constructed language (1-10)
+  language_complexity: 5
+  
+  # Size of vocabulary to generate
+  vocab_size: 1500
+
+# Model settings for translation benchmarks
+model:
+  default_model: "openai/gpt-4"
+  timeout: 60  # Longer timeout for complex translation tasks
+  rate_limit: 5.0  # Lower rate limit to avoid hitting API limits
+
+# Data settings
+data:
+  # Use larger cache for translation benchmarks
+  max_cache_size: 2000
+
+# Logging for detailed debugging
+logging:
+  level: "DEBUG"
+  file: "logs/translation_benchmark.log"

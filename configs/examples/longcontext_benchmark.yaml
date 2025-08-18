@@ -1,0 +1,71 @@
+# Example configuration for long context benchmarks
+# This configuration is optimized for evaluating models on long documents
+# with Q&A transformation
+
+# Benchmark settings for long context evaluation
+benchmark:
+  random_seed: 98765
+  evaluation_mode: "semantic_similarity"
+  evaluation_threshold: 0.75
+  preserve_structure: true
+  preserve_entities: true
+  
+  # Specialized prompt template for long context tasks
+  prompt_template: |
+    Please read the following document carefully and answer the question based on the information provided.
+    
+    Document:
+    {context}
+    
+    Question: {question}
+    
+    Answer (be concise and specific):
+
+# Long context specific settings
+longcontext:
+  # Type of document transformation
+  # Options: translation, paraphrase, structural, hybrid
+  transformation_type: "hybrid"
+  
+  # Maximum document length to process (in characters)
+  max_document_length: 50000
+  
+  # Whether to split very long documents into chunks
+  chunk_long_documents: true
+  
+  # Chunk size for long documents (in characters)
+  chunk_size: 10000
+  
+  # Overlap between chunks (in characters)
+  chunk_overlap: 1000
+
+# Model settings optimized for long context
+model:
+  default_model: "anthropic/claude-3-sonnet"  # Good for long context
+  timeout: 120  # Extended timeout for long context processing
+  rate_limit: 2.0  # Conservative rate limit for long context models
+  max_retries: 5
+
+# Data handling for large documents
+data:
+  # Larger cache for long documents
+  max_cache_size: 500  # Fewer items but larger size
+  
+  # Directory specifically for long context datasets
+  longcontext_dir: "data/benchmarks/longcontext"
+
+# Detailed logging for long context benchmarks
+logging:
+  level: "INFO"
+  file: "logs/longcontext_benchmark.log"
+  
+# Performance monitoring
+performance:
+  # Track memory usage during long context processing
+  monitor_memory: true
+  
+  # Maximum memory usage before warning (in MB)
+  max_memory_mb: 4096
+  
+  # Enable performance profiling
+  enable_profiling: false

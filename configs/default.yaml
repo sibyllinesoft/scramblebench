@@ -1,0 +1,83 @@
+# Default configuration for ScrambleBench
+# This file contains the default settings for all benchmarking operations
+
+# Benchmark execution settings
+benchmark:
+  # Random seed for reproducible results
+  random_seed: 42
+  
+  # Evaluation mode for comparing model responses to expected answers
+  # Options: exact_match, substring_match, fuzzy_match, semantic_similarity
+  evaluation_mode: "exact_match"
+  
+  # Threshold for fuzzy/semantic matching (0.0 to 1.0)
+  evaluation_threshold: 0.8
+  
+  # Whether to preserve numbers during translation
+  preserve_numbers: true
+  
+  # Whether to preserve proper nouns during translation
+  preserve_proper_nouns: true
+  
+  # Whether to preserve document structure during transformation
+  preserve_structure: true
+  
+  # Whether to preserve named entities during transformation
+  preserve_entities: true
+  
+  # Template for constructing prompts for long context benchmarks
+  prompt_template: "Context: {context}\n\nQuestion: {question}\n\nAnswer:"
+
+# Data handling configuration
+data:
+  # Base directory for all data
+  data_dir: "data"
+  
+  # Directory for benchmark datasets
+  benchmarks_dir: "data/benchmarks"
+  
+  # Directory for constructed languages
+  languages_dir: "data/languages"
+  
+  # Directory for benchmark results
+  results_dir: "data/results"
+  
+  # Directory for cached data
+  cache_dir: "data/cache"
+  
+  # Maximum number of items to cache
+  max_cache_size: 1000
+
+# Model configuration
+model:
+  # Default model provider
+  default_provider: "openrouter"
+  
+  # Default model name
+  default_model: "openai/gpt-3.5-turbo"
+  
+  # Request timeout in seconds
+  timeout: 30
+  
+  # Maximum number of retries for failed requests
+  max_retries: 3
+  
+  # Rate limit for API requests (requests per second)
+  rate_limit: 10.0
+  
+  # Vocabulary size for constructed languages
+  vocab_size: 1000
+
+# Logging configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+  
+  # Log format string
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Log file path (null for no file logging)
+  file: null
+  
+  # Whether to log to console
+  console: true

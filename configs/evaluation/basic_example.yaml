@@ -1,0 +1,56 @@
+experiment_name: basic_robustness_test
+description: Basic robustness evaluation with language translations and synonym replacements
+mode: robustness
+
+# Input configuration
+benchmark_paths:
+  - data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+  - data/benchmarks/collected/02_mathematical_reasoning/easy/collected_samples.json
+
+output_dir: results
+
+# Models to evaluate
+models:
+  - name: anthropic/claude-3-sonnet
+    provider: openrouter
+    temperature: 0.0
+    max_tokens: 1024
+    timeout: 60
+    rate_limit: 1.0
+
+  - name: openai/gpt-4
+    provider: openrouter
+    temperature: 0.0
+    max_tokens: 1024
+    timeout: 60
+    rate_limit: 1.0
+
+# Transformation settings
+transformations:
+  enabled_types:
+    - language_translation
+    - synonym_replacement
+  
+  # Language settings
+  languages:
+    - constructed_agglutinative_1
+    - constructed_fusional_1
+  language_complexity: 5
+  
+  # Synonym replacement settings
+  synonym_rate: 0.3
+  preserve_function_words: true
+  
+  # General settings
+  seed: 42
+  batch_size: 10
+
+# Evaluation settings
+max_samples: 50
+sample_seed: 42
+max_concurrent_requests: 3
+save_interval: 25
+
+# Analysis settings
+generate_plots: true
+calculate_significance: true

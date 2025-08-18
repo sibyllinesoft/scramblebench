@@ -1,0 +1,60 @@
+# Development configuration for ScrambleBench
+# This configuration is optimized for development and testing
+
+# Development benchmark settings
+benchmark:
+  random_seed: 42  # Fixed seed for reproducible development
+  evaluation_mode: "exact_match"
+  evaluation_threshold: 0.8
+  preserve_numbers: true
+  preserve_proper_nouns: true
+  preserve_structure: true
+  preserve_entities: true
+
+# Use dummy models for development to avoid API costs
+model:
+  default_provider: "dummy"
+  default_model: "test-model"
+  timeout: 10  # Short timeout for development
+  rate_limit: 100.0  # No rate limiting for dummy models
+  max_retries: 1
+
+# Development data settings
+data:
+  # Use smaller datasets for faster development
+  benchmarks_dir: "data/benchmarks/dev"
+  max_cache_size: 100  # Smaller cache for development
+  
+# Development directories
+directories:
+  # Separate results directory for development
+  results_dir: "data/results/dev"
+  
+  # Development cache
+  cache_dir: "data/cache/dev"
+  
+  # Development logs
+  logs_dir: "logs/dev"
+
+# Verbose logging for development
+logging:
+  level: "DEBUG"
+  console: true
+  file: "logs/dev/scramblebench.log"
+  
+# Development-specific settings
+development:
+  # Use smaller datasets for faster iteration
+  max_samples: 10
+  
+  # Enable debug mode
+  debug_mode: true
+  
+  # Fast evaluation mode (skip some checks)
+  fast_mode: true
+  
+  # Generate test data if not available
+  auto_generate_test_data: true
+  
+  # Save intermediate results for debugging
+  save_intermediate_results: true

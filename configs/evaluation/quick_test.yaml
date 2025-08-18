@@ -1,0 +1,42 @@
+experiment_name: quick_test
+description: Quick test evaluation for development and debugging
+mode: accuracy
+
+# Input configuration
+benchmark_paths:
+  - data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+
+output_dir: results
+
+# Models to evaluate (just one for quick testing)
+models:
+  - name: anthropic/claude-3-haiku
+    provider: openrouter
+    temperature: 0.0
+    max_tokens: 512
+    timeout: 30
+    rate_limit: 2.0
+
+# Transformation settings (minimal for quick testing)
+transformations:
+  enabled_types:
+    - language_translation
+  
+  # Language settings
+  languages:
+    - constructed_agglutinative_1
+  language_complexity: 3
+  
+  # General settings
+  seed: 1
+  batch_size: 5
+
+# Evaluation settings (small numbers for quick execution)
+max_samples: 10
+sample_seed: 1
+max_concurrent_requests: 2
+save_interval: 5
+
+# Analysis settings
+generate_plots: false  # Skip plots for quick testing
+calculate_significance: false

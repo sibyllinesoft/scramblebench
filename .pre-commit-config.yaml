@@ -1,0 +1,209 @@
+# Pre-commit configuration for ScrambleBench
+# See https://pre-commit.com for more information
+
+repos:
+  # Built-in hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-toml
+      - id: check-json
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-symlinks
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-docstring-first
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: debug-statements
+      - id: name-tests-test
+        args: [--pytest-test-first]
+      - id: requirements-txt-fixer
+      - id: fix-byte-order-marker
+
+  # Python code formatting
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3
+        args: [--line-length=100]
+
+  # Import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=100]
+
+  # Python linting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.9
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+
+  # Type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-PyYAML, types-setuptools]
+        args: [--config-file=pyproject.toml]
+        exclude: ^(tests/|docs/|scripts/)
+
+  # Security scanning
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [-r, src/, -f, json, -o, bandit-report.json]
+        pass_filenames: false
+
+  # Dependency security
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.2
+    hooks:
+      - id: python-safety-dependencies-check
+        files: pyproject.toml
+
+  # Documentation
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+      - id: pydocstyle
+        additional_dependencies: [toml]
+        args: [--config=pyproject.toml]
+
+  # Markdown formatting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+
+  # YAML formatting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types: [yaml]
+
+  # Shell script checking
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+
+  # License header enforcement
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.4
+    hooks:
+      - id: insert-license
+        files: \.py$
+        args:
+          - --license-filepath
+          - license-header.txt
+          - --use-current-year
+          - --no-extra-eol
+
+  # Spell checking
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        args: [--write-changes]
+        exclude: >
+          (?x)^(
+              .*\.po|
+              .*\.pot|
+              .*\.json|
+              .*/locale/.*|
+              docs/_build/.*
+          )$
+
+  # Jupyter notebook formatting
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.7.1
+    hooks:
+      - id: nbqa-black
+        additional_dependencies: [black]
+      - id: nbqa-isort
+        additional_dependencies: [isort]
+      - id: nbqa-ruff
+        additional_dependencies: [ruff]
+
+  # Git commit message formatting
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.13.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  # Remove unused imports
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+      - id: autoflake
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --remove-unused-variables
+          - --remove-duplicate-keys
+          - --ignore-init-module-imports
+
+  # Check for common Python mistakes
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.0
+    hooks:
+      - id: pyupgrade
+        args: [--py39-plus]
+
+  # Check for merge conflicts in git
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-merge-conflict
+
+  # Validate GitHub Actions workflows
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.27.3
+    hooks:
+      - id: check-github-workflows
+
+  # Secret detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: |
+          (?x)^(
+              .*\.lock$|
+              .*\.min\.js$|
+              .*\.min\.css$|
+              .*/node_modules/.*|
+              .*/\.git/.*
+          )$
+
+# Configuration for specific hooks
+ci:
+  autoupdate_schedule: weekly
+  autoupdate_commit_msg: 'chore: update pre-commit hooks'
+  autofix_commit_msg: 'style: auto-fixes from pre-commit hooks'
+  skip: []
+
+# Hook-specific configuration can also be done in pyproject.toml
