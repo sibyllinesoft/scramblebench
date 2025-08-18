@@ -89,7 +89,7 @@ jobs:
 
     # Cache Sphinx build artifacts
     - name: 💾 Cache Sphinx Build
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       if: github.event.inputs.force_rebuild != 'true'
       with:
         path: |
@@ -198,12 +198,12 @@ jobs:
     # Setup GitHub Pages
     - name: 🔧 Setup Pages
       if: github.ref == 'refs/heads/main'
-      uses: actions/configure-pages@v3
+      uses: actions/configure-pages@v4
 
     # Upload documentation artifact
     - name: ⬆️ Upload Documentation Artifact
       if: github.ref == 'refs/heads/main'
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: docs/_build/html/
 
@@ -232,7 +232,7 @@ jobs:
     steps:
     - name: 🌐 Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
 
     - name: 📋 Display Deployment Info
       run: |
