@@ -1,17 +1,99 @@
 # ScrambleBench
 
-**A comprehensive LLM benchmarking toolkit with contamination-resistant evaluation through constructed languages and document transformation.**
+**The contamination-resistant LLM evaluation toolkit that gives you confidence in your benchmark results.**
 
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-orange.svg)](tests/)
 
-## Overview
+## Why ScrambleBench?
 
-ScrambleBench addresses the critical challenge of training data contamination in LLM evaluation by providing two main contamination-resistant benchmarking approaches:
+**Training data contamination is destroying the credibility of LLM evaluation.** When models have seen your test data during training, benchmark scores become meaningless. Traditional benchmarks are compromised, making it impossible to accurately measure true model capabilities or compare different approaches.
 
-1. **Translation Benchmarks**: Transform existing problems into constructed languages while preserving logical structure
-2. **Long Context Benchmarks**: Modify long documents and Q&A sets through translation or light transformations
+**ScrambleBench solves this problem completely.** By transforming existing benchmarks into novel forms that preserve logical structure while eliminating memorization advantages, you get reliable evaluation results you can trust. Whether you're:
+
+- 🔬 **Researchers** needing clean evaluation data for papers
+- 🏢 **Enterprises** selecting models for production deployments  
+- 🚀 **Startups** optimizing AI systems for specific tasks
+- 🎓 **Academics** studying model capabilities without contamination bias
+
+ScrambleBench provides the contamination-resistant evaluation framework you need.
+
+## How It Works
+
+ScrambleBench uses two revolutionary approaches to eliminate training data contamination:
+
+1. **🌍 Translation Benchmarks**: Transform problems into systematically constructed languages that preserve logical structure while making memorization impossible
+2. **📚 Long Context Benchmarks**: Intelligently modify documents and Q&A pairs through translation and transformation while maintaining semantic content
+
+**The result?** Clean, reliable benchmarks that measure true model reasoning rather than memorization.
+
+## Quick Start
+
+Get up and running with ScrambleBench in minutes:
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/sibyllinesoft/scramblebench.git
+cd scramblebench
+
+# Install with uv (recommended)
+uv sync
+
+# Or with pip
+pip install -e .
+
+# Install development dependencies
+uv sync --group dev
+
+# Install with NLP capabilities for better text processing
+pip install -e ".[nlp]"
+```
+
+### 30-Second Demo
+
+```bash
+# Generate a constructed language
+scramblebench language generate mylang --type substitution --complexity 5
+
+# Transform text using the language
+scramblebench transform text "What is the capital of France?" mylang
+
+# Run evaluation (requires OPENROUTER_API_KEY)
+export OPENROUTER_API_KEY="your-key"
+scramblebench evaluate run \
+  --models "anthropic/claude-3-haiku" \
+  --benchmarks "data/benchmarks/logic_reasoning.json" \
+  --experiment-name "demo" \
+  --max-samples 5
+```
+
+### Basic Python Usage
+
+```python
+from scramblebench import TranslationBenchmark
+from scramblebench.llm import OpenRouterClient
+from scramblebench.translation.language_generator import LanguageType
+
+# Create a contamination-resistant benchmark
+benchmark = TranslationBenchmark(
+    source_dataset="simple_qa",
+    language_type=LanguageType.SUBSTITUTION,
+    language_complexity=5
+)
+
+# Initialize your model
+model = OpenRouterClient(
+    model_name="openai/gpt-4",
+    api_key="your-openrouter-key"
+)
+
+# Get reliable, contamination-free results
+result = benchmark.run(model, num_samples=50)
+print(f"True model accuracy: {result.score:.2%}")
+```
 
 ## Features
 
@@ -52,122 +134,6 @@ ScrambleBench addresses the critical challenge of training data contamination in
 - **Batch Processing**: Extract vocabularies and transform benchmark datasets  
 - **Text Transformations**: Apply proper noun swapping and synonym replacement
 - **Multiple Output Formats**: Support for text, JSON, and YAML output formats
-
-## Quick Start
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/nathanrice/scramblebench.git
-cd scramblebench
-
-# Install with uv (recommended)
-uv sync
-
-# Or with pip
-pip install -e .
-
-# Install development dependencies
-uv sync --group dev
-
-# Install with NLP capabilities for better text processing
-pip install -e ".[nlp]"
-```
-
-### Command Line Interface
-
-The CLI provides comprehensive language generation and text transformation capabilities:
-
-```bash
-# Generate a constructed language
-scramblebench language generate mylang --type substitution --complexity 5
-
-# Transform text using a language
-scramblebench transform text "Hello world" mylang
-
-# Extract vocabulary from benchmark files
-scramblebench batch extract-vocab data/benchmarks/questions.json
-
-# Apply proper noun replacement
-scramblebench transform proper-nouns "John went to New York" --strategy random
-
-# Run comprehensive evaluation (requires OPENROUTER_API_KEY)
-scramblebench evaluate run \
-  --models "anthropic/claude-3-sonnet,openai/gpt-4" \
-  --benchmarks "data/benchmarks/logic_reasoning.json" \
-  --experiment-name "robustness_test"
-
-# Analyze evaluation results
-scramblebench evaluate analyze robustness_test
-
-# Get help for any command
-scramblebench --help
-scramblebench evaluate --help
-```
-
-See [`CLI_GUIDE.md`](CLI_GUIDE.md) for comprehensive CLI documentation and examples.
-
-### Basic Usage
-
-#### Translation Benchmark
-
-```python
-from scramblebench import TranslationBenchmark
-from scramblebench.llm import OpenRouterClient
-from scramblebench.translation.language_generator import LanguageType
-
-# Create a translation benchmark
-benchmark = TranslationBenchmark(
-    source_dataset="simple_qa",
-    language_type=LanguageType.SUBSTITUTION,
-    language_complexity=5
-)
-
-# Initialize your model
-model = OpenRouterClient(
-    model_name="openai/gpt-4",
-    api_key="your-openrouter-key"
-)
-
-# Run the benchmark
-result = benchmark.run(model, num_samples=50)
-print(f"Accuracy: {result.score:.2%}")
-```
-
-#### Long Context Benchmark
-
-```python
-from scramblebench import LongContextBenchmark
-from scramblebench.longcontext.document_transformer import TransformationType
-
-# Create a long context benchmark
-benchmark = LongContextBenchmark(
-    dataset_name="reading_comprehension",
-    transformation_type=TransformationType.HYBRID,
-    language_complexity=4
-)
-
-# Run evaluation
-result = benchmark.run(model, num_samples=20)
-print(f"Document accuracy: {result.metrics['document_accuracy']:.2%}")
-```
-
-#### Using Configuration Files
-
-```python
-from scramblebench.utils.config import Config
-from scramblebench import TranslationBenchmark
-
-# Load configuration
-config = Config("configs/translation_benchmark.yaml")
-
-# Create benchmark with config
-benchmark = TranslationBenchmark(
-    source_dataset="math_problems",
-    config=config
-)
-```
 
 ## Evaluation Pipeline
 
@@ -481,7 +447,7 @@ report = reporter.generate_report(results, title="Model Comparison")
 
 ```bash
 # Clone repository
-git clone https://github.com/nathanrice/scramblebench.git
+git clone https://github.com/sibyllinesoft/scramblebench.git
 cd scramblebench
 
 # Install development dependencies
@@ -580,8 +546,8 @@ data:
 ### Getting Help
 
 - **Documentation**: [Link to full documentation]
-- **Issues**: [GitHub Issues](https://github.com/nathanrice/scramblebench/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/nathanrice/scramblebench/discussions)
+- **Issues**: [GitHub Issues](https://github.com/sibyllinesoft/scramblebench/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/sibyllinesoft/scramblebench/discussions)
 
 ## License
 
@@ -596,7 +562,7 @@ If you use ScrambleBench in your research, please cite:
   title={ScrambleBench: Contamination-Resistant LLM Evaluation Through Constructed Languages},
   author={Rice, Nathan},
   year={2024},
-  url={https://github.com/nathanrice/scramblebench}
+  url={https://github.com/sibyllinesoft/scramblebench}
 }
 ```
 
