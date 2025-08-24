@@ -29,7 +29,7 @@ try:
 except ImportError:
     HAS_DATASETS = False
 
-from scramblebench.utils.config import Config
+from ..core.unified_config import ScrambleBenchConfig
 
 
 @dataclass
@@ -54,7 +54,7 @@ class DataLoader:
     
     def __init__(
         self,
-        config: Optional[Config] = None,
+        config: Optional[ScrambleBenchConfig] = None,
         logger: Optional[logging.Logger] = None
     ):
         """

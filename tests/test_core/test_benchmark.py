@@ -16,7 +16,7 @@ from typing import Any, Dict, List
 from dataclasses import asdict
 
 from scramblebench.core.benchmark import BaseBenchmark, BenchmarkResult
-from scramblebench.utils.config import Config
+from scramblebench.core.unified_config import ScrambleBenchConfig
 
 
 class MockBenchmark(BaseBenchmark):

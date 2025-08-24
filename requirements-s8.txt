@@ -1,0 +1,22 @@
+# S8 Statistical Analysis Requirements for ScrambleBench
+# Core dependencies for academic-grade statistical modeling
+
+# Core data science stack
+numpy>=1.21.0
+pandas>=1.3.0
+scipy>=1.7.0
+
+# Statistical modeling
+statsmodels>=0.13.0
+scikit-learn>=1.0.0
+
+# Optional R integration (advanced models)
+# rpy2>=3.4.0  # Uncomment if R backend desired
+
+# Database and file I/O
+# duckdb>=0.8.0  # Already in main requirements
+# pyyaml>=6.0   # Already in main requirements
+
+# Testing and development
+pytest>=6.0.0
+pytest-cov>=3.0.0

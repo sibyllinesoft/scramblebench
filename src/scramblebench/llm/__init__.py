@@ -17,6 +17,7 @@ Key Components
 
 **Concrete Implementations:**
     * :class:`OpenRouterClient` - Integration with OpenRouter API for multi-provider access
+    * :class:`OllamaClient` - Integration with Ollama for local LLM inference
     * :class:`DummyModel` - Testing implementation for development and validation
 
 **Factory Pattern:**
@@ -101,6 +102,15 @@ Provider Support
     - Mistral (Mixtral, Mistral 7B)
     - And many more...
 
+**Ollama Integration:**
+    Local inference with open-source models:
+    
+    - Meta Llama (3.2 1B, 3B, 8B variants)
+    - Microsoft Phi (3.8B, 14B efficient models)
+    - Google Gemma (2B, 9B optimized models) 
+    - Code Llama (specialized for programming)
+    - No API keys required, complete privacy
+
 **Rate Limiting & Error Handling:**
     Built-in protection for production use:
     
@@ -178,7 +188,21 @@ See Also
 * :doc:`../examples/basic_usage` - Usage examples
 """
 
-from scramblebench.llm.model_interface import ModelInterface
-from scramblebench.llm.openrouter_client import OpenRouterClient
+from scramblebench.llm.model_interface import ModelInterface, ModelResponse, ModelConfig, ModelType, ModelFactory, DummyModel
+from scramblebench.llm.openrouter_client import OpenRouterClient, create_openrouter_client
+from scramblebench.llm.ollama_client import OllamaClient, create_ollama_client
+from scramblebench.llm.model_adapter import ModelAdapter, query_model, batch_query_model
 
-__all__ = ["ModelInterface", "OpenRouterClient"]
+__all__ = [
+    # Core interfaces and types
+    "ModelInterface", "ModelResponse", "ModelConfig", "ModelType", "ModelFactory", "DummyModel",
+    
+    # Provider implementations
+    "OpenRouterClient", "OllamaClient", 
+    
+    # Factory functions
+    "create_openrouter_client", "create_ollama_client",
+    
+    # Model adapter
+    "ModelAdapter", "query_model", "batch_query_model"
+]

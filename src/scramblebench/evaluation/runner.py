@@ -10,9 +10,12 @@ from pathlib import Path
 from datetime import datetime
 import json
 
-from .config import EvaluationConfig, ModelProvider
+from ..core.unified_config import ScrambleBenchConfig, EvaluationConfig, ModelConfig
+# Backward compatibility import for ModelProvider
+from .config import ModelProvider
 from .transformation_pipeline import TransformationPipeline
 from .openrouter_runner import OpenRouterEvaluationRunner, EvaluationResult
+from .ollama_runner import OllamaEvaluationRunner
 from .results import ResultsManager, EvaluationResults
 from .metrics import MetricsCalculator
 from .plotting import PlotGenerator
@@ -80,13 +83,25 @@ class EvaluationRunner:
         
         # Initialize runners for each provider
         for provider, models in provider_models.items():
-            if provider == ModelProvider.OPENROUTER:
+            # Handle both enum and string provider types
+            provider_value = provider.value if hasattr(provider, 'value') else provider
+            
+            if provider == ModelProvider.OPENROUTER or provider_value == 'openrouter':
                 # Create config with only OpenRouter models
                 openrouter_config = self.config.copy()
                 openrouter_config.models = models
                 
-                runners[provider.value] = OpenRouterEvaluationRunner(
+                runners[provider_value] = OpenRouterEvaluationRunner(
                     openrouter_config,
+                    logger=self.logger
+                )
+            elif provider == ModelProvider.OLLAMA or provider_value == 'ollama':
+                # Create config with only Ollama models
+                ollama_config = self.config.copy()
+                ollama_config.models = models
+                
+                runners[provider_value] = OllamaEvaluationRunner(
+                    ollama_config,
                     logger=self.logger
                 )
             else:

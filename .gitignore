@@ -334,3 +334,33 @@ multirun/
 *.db
 *.sqlite
 *.sqlite3
+# Development and experimental files
+*_test_*.json
+*_analysis*.json
+debug_*.py
+test_*integration.py
+quick_*.py
+simple_*.py
+run_*.py
+validation_results.json
+# Database files (keep structure only)
+db/*.db
+# Temporary analysis results
+language_dependency_analysis.png
+test_visualization*.png
+# Cache and temp directories
+language_dependency_cache/
+language_dependency_results/
+deprecated_configs_backup/
+# Additional cleanup patterns
+*_demo.py
+*_summary.py
+example_experiment_tracking.py
+create_publication*.py
+generate_*.py
+visualize_*.py
+publication_figures/
+language_dependency_atlas/
+data/reports/
+data/results/
+results/

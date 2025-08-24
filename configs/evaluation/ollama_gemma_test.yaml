@@ -1,0 +1,41 @@
+experiment_name: ollama_gemma_test
+description: Ultra-minimal Ollama test with available gemma3:270m model
+mode: accuracy
+
+# Input configuration - using existing benchmark
+benchmark_paths:
+  - data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+
+output_dir: data/reports/ollama_test
+
+# Model configuration using available gemma3:270m
+models:
+  - name: "gemma3:270m"
+    provider: ollama
+    temperature: 0.7
+    max_tokens: 200
+    timeout: 30
+
+# Simple transformations to test the pipeline
+transformations:
+  enabled_types:
+    - language_translation
+  
+  # Simple language settings for quick test
+  languages:
+    - constructed_agglutinative_1
+  language_complexity: 1
+  
+  # General settings
+  seed: 1
+  batch_size: 2
+
+# Evaluation settings (minimal for quick testing)
+max_samples: 3                    # Only 3 samples for ultra-fast testing
+sample_seed: 1
+max_concurrent_requests: 1        # Sequential processing for local models
+save_interval: 2
+
+# Analysis settings (skip for quick testing)
+generate_plots: false
+calculate_significance: false

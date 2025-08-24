@@ -25,7 +25,7 @@ from scramblebench.translation.language_generator import (
     LanguageGenerator, ConstructedLanguage, LanguageType
 )
 from scramblebench.translation.translator import ProblemTranslator
-from scramblebench.utils.config import Config
+from ..core.unified_config import ScrambleBenchConfig
 from scramblebench.utils.data_loader import DataLoader
 from scramblebench.llm.model_adapter import ModelAdapter
 from scramblebench.core.data_extractors import DocumentExtractor, QAPairExtractor, PromptConstructor
@@ -47,7 +47,7 @@ class LongContextBenchmark(BaseBenchmark):
         transformation_type: TransformationType = TransformationType.TRANSLATION,
         language_type: Optional[LanguageType] = LanguageType.SUBSTITUTION,
         language_complexity: int = 5,
-        config: Optional[Config] = None,
+        config: Optional[ScrambleBenchConfig] = None,
         logger: Optional[logging.Logger] = None
     ):
         """

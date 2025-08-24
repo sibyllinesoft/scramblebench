@@ -1,0 +1,244 @@
+# ScrambleBench Scaling Survey Configuration
+# Academic-grade configuration for large-scale model evaluation
+# Target: Complete evaluation across model ladder with deterministic sampling
+
+run:
+  run_id: "scaling_survey_{{ timestamp }}"
+  max_cost_usd: 500.0  # Academic budget limit
+  temperature: 0.0
+  top_p: 1.0
+  random_seed: 42
+  deterministic: true
+  metadata:
+    purpose: "Academic scaling survey for surface pattern sensitivity"
+    institution: "Research Institution"
+    contact: "researcher@institution.edu"
+
+datasets:
+  - name: "hellaswag_survey"
+    path: "data/benchmarks/hellaswag.jsonl"
+    sample_size: 150
+    domain_key: "activity_label"
+    input_format: "multiple_choice"
+    description: "Commonsense reasoning about everyday activities"
+    
+  - name: "winogrande_survey"
+    path: "data/benchmarks/winogrande.jsonl"
+    sample_size: 150
+    domain_key: "domain"
+    input_format: "multiple_choice"
+    description: "Pronoun resolution requiring commonsense reasoning"
+    
+  - name: "arc_challenge_survey"
+    path: "data/benchmarks/arc_challenge.jsonl"
+    sample_size: 150
+    domain_key: "category"
+    input_format: "multiple_choice"
+    description: "Science questions requiring reasoning"
+    
+  - name: "mmlu_subset_survey"
+    path: "data/benchmarks/mmlu_subset.jsonl"
+    sample_size: 150
+    domain_key: "subject"
+    input_format: "multiple_choice"
+    description: "Academic knowledge across diverse subjects"
+
+models:
+  provider_groups:
+    - name: "ollama_small"
+      provider: "ollama"
+      list:
+        - "gemma2:2b"
+        - "qwen2.5:3b"
+        - "llama3.2:3b"
+      connection:
+        base_url: "http://localhost:11434"
+        timeout: 60
+        
+    - name: "ollama_medium"
+      provider: "ollama"
+      list:
+        - "llama3.1:8b"
+        - "qwen2.5:7b"
+        - "gemma2:9b"
+        - "mistral:7b"
+      connection:
+        base_url: "http://localhost:11434"
+        timeout: 90
+        
+    - name: "ollama_large"
+      provider: "ollama"
+      list:
+        - "llama3.1:70b"
+        - "qwen2.5:72b"
+        - "gemma2:27b"
+      connection:
+        base_url: "http://localhost:11434"
+        timeout: 180
+        
+    - name: "hosted_efficient"
+      provider: "openrouter"
+      list:
+        - "meta-llama/llama-3.2-1b-instruct"
+        - "meta-llama/llama-3.2-3b-instruct"
+        - "microsoft/phi-3-mini-4k-instruct"
+        - "microsoft/phi-3-small-8k-instruct"
+      connection:
+        api_key_env: "OPENROUTER_API_KEY"
+        base_url: "https://openrouter.ai/api/v1"
+        
+    - name: "hosted_capable"
+      provider: "openrouter" 
+      list:
+        - "meta-llama/llama-3.1-8b-instruct"
+        - "meta-llama/llama-3.1-70b-instruct"
+        - "anthropic/claude-3-haiku"
+        - "anthropic/claude-3-sonnet"
+      connection:
+        api_key_env: "OPENROUTER_API_KEY"
+        base_url: "https://openrouter.ai/api/v1"
+
+transforms:
+  - kind: "original"
+    description: "Unmodified original questions for baseline accuracy"
+    
+  - kind: "paraphrase"
+    description: "Semantic control to distinguish contamination from brittleness"
+    provider: "anthropic"
+    model: "claude-3-haiku"
+    semantic_threshold: 0.85
+    surface_divergence_threshold: 0.25
+    max_retries: 3
+    cache_enabled: true
+    
+  - kind: "scramble"
+    description: "Surface-level perturbations to measure language dependency"
+    levels: [0.1, 0.2, 0.3, 0.4, 0.5]  # Five scramble levels for detailed analysis
+    scheme:
+      type: "symbol_substitution"
+      alphabet: "@#$%^&*+=?!~`"
+      preserve_spaces: true
+      preserve_punctuation: true
+      preserve_digits: true
+    perturbation_metrics:
+      - "token_kl_divergence"
+      - "tokenizer_fragmentation"
+      - "edit_distance"
+      - "bleu_score"
+
+evaluation:
+  params:
+    max_tokens: 128
+    temperature: 0.0
+    top_p: 1.0
+    stop_sequences: ["\n\n", "###", "---"]
+    
+  metrics:
+    - "accuracy"
+    - "rrs"  # Relative Retention Score = Acc_scrambled / Acc_original
+    - "ldc"  # Language Dependency Coefficient = 1 - RRS
+    - "confidence_interval"
+    - "bootstrap_significance"
+    
+  aggregation:
+    by_domain: true
+    by_model_family: true
+    by_parameter_count: true
+    bootstrap_samples: 1000
+    confidence_level: 0.95
+
+# Scaling Survey Specific Configuration
+scaling_survey:
+  items_per_domain: 150
+  max_concurrent_models: 3
+  deterministic_sampling_seed: 42
+  checkpoint_interval: 1  # Save after each model
+  rate_limit_delay_seconds: 2.0
+  max_retries_per_model: 3
+  fail_fast_on_budget_exceeded: true
+  
+  sampling:
+    method: "stratified"
+    stratify_by: "domain"
+    balance_domains: true
+    min_items_per_domain: 10
+    
+  concurrency:
+    max_concurrent_models: 3
+    respect_provider_limits: true
+    rate_limit_backoff: "exponential"
+    
+  checkpointing:
+    enabled: true
+    save_interval: 1  # After each model
+    include_aggregates: true
+    compress_checkpoints: false
+    retention_policy: "keep_all"
+    
+  monitoring:
+    progress_update_interval: 30  # seconds
+    enable_real_time_status: true
+    log_level: "INFO"
+    include_cost_tracking: true
+    
+  reproducibility:
+    freeze_item_selection: true
+    save_sampling_metadata: true
+    record_all_parameters: true
+    version_all_dependencies: true
+
+db:
+  uri: "sqlite:///db/scaling_survey.db"
+  batch_size: 100
+  connection_pool_size: 5
+  timeout: 30
+  
+  schema_version: "1.0"
+  backup_enabled: true
+  backup_interval: 3600  # 1 hour
+  
+  indexes:
+    - ["run_id", "model_id", "dataset"]
+    - ["transform_type", "scramble_level"]
+    - ["domain", "accuracy"]
+
+output:
+  directory: "results/scaling_survey"
+  save_predictions: true
+  save_raw_responses: true
+  save_metrics: true
+  save_aggregates: true
+  
+  formats:
+    plots: ["png", "pdf"]
+    tables: ["csv", "json", "latex"]
+    reports: ["html", "pdf"]
+    
+  compression: "gzip"
+  retention_days: 365
+
+# Academic Publication Requirements
+academic:
+  preregistration:
+    hypotheses:
+      - "RRS decreases with model size for contamination-sensitive tasks"
+      - "Paraphrase control maintains performance for reasoning tasks"
+      - "Language dependency shows task-specific patterns"
+    
+  analysis_plan:
+    primary_models: ["glmm", "gam", "segmented"]
+    primary_metrics: ["rrs", "ldc"] 
+    correction_method: "bonferroni"
+    effect_size_threshold: 0.1
+    
+  reproducibility:
+    seed_everything: true
+    version_pin_dependencies: true
+    containerize_environment: true
+    archive_complete_configs: true
+    
+  ethics:
+    model_consent: "All models used with appropriate licensing"
+    data_consent: "All datasets used with appropriate licensing"
+    cost_transparency: true
+    environmental_impact: "Carbon footprint tracked and reported"

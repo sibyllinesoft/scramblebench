@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch, AsyncMock, MagicMock
 from typing import Dict, List, Any
 
 from scramblebench.evaluation.runner import EvaluationRunner
-from scramblebench.evaluation.config import EvaluationConfig, ModelConfig, ModelProvider, TransformationConfig
+from scramblebench.core.unified_config import ScrambleBenchConfig, ModelConfig, ProviderGroupConfig, ScrambleTransformConfig as TransformationConfig
 from scramblebench.evaluation.results import EvaluationResults
 from scramblebench.evaluation.openrouter_runner import EvaluationResult
 

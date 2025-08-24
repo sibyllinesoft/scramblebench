@@ -1,0 +1,81 @@
+# ScrambleBench Contamination Detection Configuration
+# Comprehensive evaluation comparing original vs scrambled questions
+# to detect potential training data contamination
+
+experiment_name: contamination_detection_gemma3_4b
+description: |
+  Comprehensive contamination detection analysis for gemma3:4b model.
+  Compares performance on original questions vs semantically equivalent
+  scrambled versions to detect potential memorization of training data.
+  
+  Uses multiple scrambling techniques:
+  - Constructed language translation
+  - Synonym replacement
+  - Proper noun swapping
+
+mode: robustness
+
+# Input configuration - using logic reasoning benchmark
+benchmark_paths:
+  - data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+
+output_dir: data/reports/contamination_detection_gemma3_4b
+
+# Model configuration - gemma3:4b with deterministic settings
+models:
+  - name: "gemma3:4b"
+    provider: ollama
+    temperature: 0.1        # Low temperature for consistent results
+    max_tokens: 200         # Sufficient for reasoning tasks
+    timeout: 90            # Generous timeout for local inference
+
+# Comprehensive transformation suite for contamination detection
+transformations:
+  enabled_types:
+    - language_translation   # Translate to constructed languages
+    - synonym_replacement    # Replace words with synonyms
+    - proper_noun_swap      # Swap proper nouns
+  
+  # Language translation settings
+  languages:
+    - constructed_agglutinative_1  # Complex agglutinative language
+    - constructed_isolating_1      # Isolating language structure
+    - constructed_fusional_1       # Fusional morphology
+  language_complexity: 5           # Medium complexity for balance
+  
+  # Synonym replacement settings
+  synonym_rate: 0.35              # Replace 35% of applicable words
+  preserve_function_words: true    # Keep articles, prepositions, etc.
+  
+  # Proper noun replacement settings
+  proper_noun_strategy: "thematic" # Use thematically appropriate replacements
+  
+  # Reproducibility settings
+  seed: 42
+  batch_size: 5
+
+# Evaluation settings optimized for contamination detection
+max_samples: 25                    # Good sample size for statistical analysis
+sample_seed: 42                    # Reproducible sampling
+max_concurrent_requests: 1         # Sequential processing for local models
+save_interval: 5                   # Frequent saves during evaluation
+
+# Analysis settings - comprehensive analysis
+generate_plots: true               # Generate contamination resistance plots
+calculate_significance: true       # Statistical significance testing
+
+# Additional reporting settings
+plot_config:
+  save_formats: ["png", "pdf"]
+  dpi: 300
+  style: "seaborn-v0_8"
+  generate_degradation_plots: true
+  generate_comparison_plots: true
+  generate_heatmaps: true
+
+metrics_config:
+  calculate_degradation: true
+  degradation_threshold: 0.05     # 5% degradation threshold
+  significance_level: 0.05        # 95% confidence level
+  confidence_intervals: true
+  effect_size: true

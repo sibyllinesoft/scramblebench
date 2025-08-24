@@ -1,0 +1,475 @@
+/* 
+ * Academic Publication Styles
+ * Specialized styling for publication-ready figures and academic formatting
+ */
+
+/* Academic Color Schemes */
+:root {
+    /* Publication-safe color palette */
+    --academic-blue: #1f4788;
+    --academic-red: #c44569;
+    --academic-green: #40a85e;
+    --academic-orange: #f39c12;
+    --academic-purple: #8e44ad;
+    --academic-teal: #16a085;
+    
+    /* Grayscale for B&W printing */
+    --gray-dark: #2c3e50;
+    --gray-medium: #7f8c8d;
+    --gray-light: #bdc3c7;
+    --gray-lighter: #ecf0f1;
+    
+    /* Color-blind safe palette (Viridis-inspired) */
+    --cb-purple: #440154;
+    --cb-blue: #31688e;
+    --cb-teal: #35b779;
+    --cb-yellow: #fde725;
+    
+    /* Academic typography scales */
+    --text-caption: 10px;
+    --text-small: 11px;
+    --text-body: 12px;
+    --text-large: 14px;
+    --text-title: 16px;
+    --text-heading: 18px;
+    
+    /* Academic spacing (based on LaTeX article class) */
+    --academic-margin: 18px;
+    --academic-padding: 12px;
+    --academic-gap: 9px;
+    
+    /* Figure specifications */
+    --figure-width-single: 8.5cm;  /* Single column */
+    --figure-width-double: 17.8cm; /* Double column */
+    --figure-height-max: 24cm;     /* Maximum height */
+}
+
+/* Academic Figure Styling */
+.academic-figure {
+    background: white;
+    border: none;
+    margin: var(--academic-margin) 0;
+    page-break-inside: avoid;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+.figure-title {
+    font-family: 'Source Serif Pro', Georgia, serif;
+    font-size: var(--text-title);
+    font-weight: 600;
+    color: var(--gray-dark);
+    margin-bottom: var(--academic-gap);
+    line-height: 1.3;
+}
+
+.figure-caption {
+    font-size: var(--text-small);
+    color: var(--gray-medium);
+    line-height: 1.4;
+    margin-top: var(--academic-gap);
+    text-align: justify;
+    hyphens: auto;
+}
+
+.figure-caption .caption-label {
+    font-weight: 600;
+    color: var(--gray-dark);
+}
+
+/* Academic Plot Styling */
+.academic-plot {
+    /* Ensure plots fit academic dimensions */
+    max-width: var(--figure-width-double);
+    height: auto;
+}
+
+.academic-plot .plotly-container {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: var(--text-small);
+}
+
+/* Axis and Label Styling */
+.academic-plot .xaxislayer-above,
+.academic-plot .yaxislayer-above {
+    font-size: var(--text-small) !important;
+    font-family: 'Source Sans Pro', Arial, sans-serif !important;
+}
+
+.academic-plot .g-xtitle,
+.academic-plot .g-ytitle {
+    font-size: var(--text-body) !important;
+    font-weight: 500 !important;
+    font-family: 'Source Sans Pro', Arial, sans-serif !important;
+}
+
+/* Legend Styling */
+.academic-plot .legend {
+    font-size: var(--text-small) !important;
+    font-family: 'Source Sans Pro', Arial, sans-serif !important;
+}
+
+/* Color-blind Safe Themes */
+.colorblind-safe {
+    --primary-color: var(--cb-purple);
+    --secondary-color: var(--cb-blue);
+    --tertiary-color: var(--cb-teal);
+    --quaternary-color: var(--cb-yellow);
+}
+
+.grayscale {
+    --primary-color: var(--gray-dark);
+    --secondary-color: var(--gray-medium);
+    --tertiary-color: var(--gray-light);
+    --quaternary-color: var(--gray-lighter);
+}
+
+/* Academic Typography */
+.academic-typography {
+    font-family: 'Source Serif Pro', Georgia, serif;
+    line-height: 1.6;
+    color: var(--gray-dark);
+}
+
+.academic-typography h1,
+.academic-typography h2,
+.academic-typography h3 {
+    font-family: 'Source Serif Pro', Georgia, serif;
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.academic-typography h1 { font-size: 20px; }
+.academic-typography h2 { font-size: var(--text-heading); }
+.academic-typography h3 { font-size: var(--text-title); }
+
+.academic-typography p {
+    margin-bottom: 1em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.academic-typography .equation {
+    font-family: 'Computer Modern', 'Latin Modern Math', serif;
+    font-style: italic;
+    text-align: center;
+    margin: 1.5em 0;
+    padding: 1em;
+    background: var(--gray-lighter);
+    border-left: 4px solid var(--academic-blue);
+}
+
+.academic-typography .citation {
+    font-size: var(--text-small);
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+/* Statistical Significance Indicators */
+.significance-indicator {
+    position: relative;
+    display: inline-block;
+}
+
+.significance-indicator::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -8px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+}
+
+.significance-indicator.p001::after {
+    background: var(--academic-red);
+    content: '***';
+    width: auto;
+    height: auto;
+    font-size: 8px;
+    line-height: 1;
+}
+
+.significance-indicator.p01::after {
+    background: var(--academic-orange);
+    content: '**';
+    width: auto;
+    height: auto;
+    font-size: 8px;
+    line-height: 1;
+}
+
+.significance-indicator.p05::after {
+    background: var(--academic-blue);
+    content: '*';
+    width: auto;
+    height: auto;
+    font-size: 8px;
+    line-height: 1;
+}
+
+/* Effect Size Styling */
+.effect-size {
+    font-family: var(--font-mono);
+    font-weight: 500;
+}
+
+.effect-size.small { color: var(--academic-green); }
+.effect-size.medium { color: var(--academic-orange); }
+.effect-size.large { color: var(--academic-red); }
+
+.effect-size::before {
+    content: 'd = ';
+    font-style: italic;
+    font-family: 'Source Serif Pro', Georgia, serif;
+}
+
+/* Confidence Intervals */
+.confidence-interval {
+    font-size: var(--text-small);
+    color: var(--gray-medium);
+    font-family: var(--font-mono);
+}
+
+.confidence-interval::before {
+    content: '95% CI: ';
+    font-style: italic;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+
+/* Academic Tables */
+.academic-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-small);
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    margin: var(--academic-margin) 0;
+}
+
+.academic-table th {
+    background: var(--gray-lighter);
+    padding: var(--academic-padding);
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--gray-medium);
+    color: var(--gray-dark);
+}
+
+.academic-table td {
+    padding: var(--academic-gap) var(--academic-padding);
+    border-bottom: 1px solid var(--gray-light);
+    color: var(--gray-dark);
+}
+
+.academic-table .numeric {
+    text-align: right;
+    font-family: var(--font-mono);
+}
+
+.academic-table .highlight {
+    background: rgba(31, 71, 136, 0.08);
+    font-weight: 500;
+}
+
+/* Mathematical Notation */
+.math-inline {
+    font-family: 'Computer Modern', 'Latin Modern Math', serif;
+    font-style: italic;
+}
+
+.math-block {
+    font-family: 'Computer Modern', 'Latin Modern Math', serif;
+    font-style: italic;
+    text-align: center;
+    margin: 1.5em 0;
+    font-size: var(--text-body);
+}
+
+.greek {
+    font-family: 'Computer Modern', 'Times New Roman', serif;
+    font-style: italic;
+}
+
+/* Research Highlights */
+.research-highlight {
+    background: linear-gradient(90deg, rgba(31, 71, 136, 0.1), rgba(31, 71, 136, 0.05));
+    border-left: 4px solid var(--academic-blue);
+    padding: var(--academic-padding);
+    margin: var(--academic-margin) 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.research-highlight .highlight-title {
+    font-weight: 600;
+    color: var(--academic-blue);
+    font-size: var(--text-body);
+    margin-bottom: var(--academic-gap);
+}
+
+.research-highlight .highlight-content {
+    color: var(--gray-dark);
+    line-height: 1.5;
+}
+
+/* Key Findings Box */
+.key-findings {
+    border: 2px solid var(--academic-blue);
+    padding: var(--academic-padding);
+    margin: var(--academic-margin) 0;
+    background: rgba(31, 71, 136, 0.02);
+    border-radius: 4px;
+}
+
+.key-findings .findings-title {
+    font-family: 'Source Serif Pro', Georgia, serif;
+    font-size: var(--text-title);
+    font-weight: 600;
+    color: var(--academic-blue);
+    margin-bottom: var(--academic-gap);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: var(--text-small);
+}
+
+.key-findings ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.key-findings li {
+    margin-bottom: var(--academic-gap);
+    line-height: 1.5;
+}
+
+/* Methodology Box */
+.methodology {
+    background: var(--gray-lighter);
+    border: 1px solid var(--gray-light);
+    padding: var(--academic-padding);
+    margin: var(--academic-margin) 0;
+    font-size: var(--text-small);
+    border-radius: 4px;
+}
+
+.methodology .method-title {
+    font-weight: 600;
+    color: var(--gray-dark);
+    margin-bottom: var(--academic-gap);
+    text-transform: uppercase;
+    font-size: var(--text-caption);
+    letter-spacing: 0.5px;
+}
+
+/* Academic Export Styles */
+@media print {
+    :root {
+        --academic-margin: 0.5cm;
+        --academic-padding: 0.3cm;
+        --academic-gap: 0.2cm;
+    }
+    
+    .academic-figure {
+        margin: var(--academic-margin) 0;
+        page-break-inside: avoid;
+    }
+    
+    .figure-title {
+        font-size: 12pt;
+        page-break-after: avoid;
+    }
+    
+    .figure-caption {
+        font-size: 10pt;
+        page-break-before: avoid;
+    }
+    
+    /* Ensure plots are sized correctly for print */
+    .academic-plot {
+        width: 100% !important;
+        max-width: 17cm !important;
+        height: auto !important;
+    }
+    
+    /* Remove interactive elements */
+    .panel-controls,
+    .export-btn,
+    .interactive-controls {
+        display: none !important;
+    }
+    
+    /* Adjust colors for grayscale printing */
+    .grayscale-print {
+        filter: grayscale(100%);
+    }
+    
+    /* Ensure text remains readable */
+    * {
+        color: black !important;
+        background: white !important;
+    }
+    
+    .academic-table th {
+        background: #f0f0f0 !important;
+        border-bottom: 2px solid black !important;
+    }
+    
+    .academic-table td {
+        border-bottom: 1px solid #ccc !important;
+    }
+}
+
+/* SVG Export Specific Styles */
+.svg-export {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 11px;
+}
+
+.svg-export text {
+    font-family: 'Source Sans Pro', Arial, sans-serif !important;
+    font-size: 11px !important;
+}
+
+.svg-export .axis-title {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+.svg-export .plot-title {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    font-family: 'Source Serif Pro', Georgia, serif !important;
+}
+
+/* High-DPI Export Adjustments */
+.hidpi-export {
+    font-size: 8px; /* Smaller base font for high DPI */
+}
+
+.hidpi-export .axis-title {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.hidpi-export .plot-title {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Academic Journal Specific Styles */
+.nature-style {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    --figure-width-single: 8.9cm;
+    --figure-width-double: 18.3cm;
+}
+
+.science-style {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    --figure-width-single: 8.5cm;
+    --figure-width-double: 17.8cm;
+}
+
+.pnas-style {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    --figure-width-single: 8.7cm;
+    --figure-width-double: 18.0cm;
+}

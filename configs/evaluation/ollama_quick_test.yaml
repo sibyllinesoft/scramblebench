@@ -1,0 +1,45 @@
+experiment_name: ollama_quick_test
+description: Ultra-quick Ollama test with minimal sample size for E2E verification
+mode: accuracy
+
+# Input configuration - minimal for quick testing
+benchmark_paths:
+  - data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+
+output_dir: results
+
+# Single small Ollama model for fastest testing
+models:
+  - name: llama3.2:1b
+    provider: ollama
+    temperature: 0.0
+    max_tokens: 256  # Smaller for faster inference
+    timeout: 120     # Reduced timeout
+    rate_limit: null
+
+# Minimal transformation settings
+transformations:
+  enabled_types:
+    - language_translation
+  
+  languages:
+    - constructed_basic_1
+  language_complexity: 1  # Simplest possible
+  
+  seed: 42
+  batch_size: 2
+
+# Evaluation settings (ultra-minimal for quick verification)
+max_samples: 5            # Only 5 samples for quick test
+sample_seed: 42
+max_concurrent_requests: 1
+save_interval: 5
+
+# Analysis settings
+generate_plots: false     # Skip plots for speed
+calculate_significance: false
+
+# Expected runtime: < 2 minutes
+# Prerequisites:
+#   1. ollama serve (running)
+#   2. ollama pull llama3.2:1b

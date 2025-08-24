@@ -1,0 +1,96 @@
+# ScrambleBench Smoke Test Configuration
+# Minimal test set for rapid validation: 20 items × 2 models × 4 conditions
+# Target: <10 minutes execution, <$5 budget, full system validation
+
+run:
+  run_id: "smoke_test_{{ timestamp }}"
+  max_cost_usd: 5.0
+  temperature: 0.0
+  top_p: 1.0
+  random_seed: 42
+  deterministic: true
+
+datasets:
+  - name: "hellaswag_smoke"
+    path: "data/benchmarks/hellaswag_sample.jsonl"
+    sample_size: 20
+    domain_key: "activity_label"
+    input_format: "multiple_choice"
+    
+  - name: "winogrande_smoke"
+    path: "data/benchmarks/winogrande_sample.jsonl"
+    sample_size: 20
+    domain_key: "domain"
+    input_format: "multiple_choice"
+
+models:
+  provider_groups:
+    - name: "ollama_smoke"
+      provider: "ollama"
+      list: 
+        - "gemma2:2b"
+        - "qwen2.5:3b"
+      connection:
+        base_url: "http://localhost:11434"
+        timeout: 30
+        
+    - name: "hosted_smoke"
+      provider: "openrouter"
+      list:
+        - "meta-llama/llama-3.2-1b-instruct"
+        - "microsoft/phi-3-mini-4k-instruct"
+      connection:
+        api_key_env: "OPENROUTER_API_KEY"
+        base_url: "https://openrouter.ai/api/v1"
+
+transforms:
+  - kind: "original"
+    
+  - kind: "scramble"
+    levels: [0.2, 0.4]
+    scheme:
+      type: "symbol_substitution"
+      alphabet: "@#$%^&*"
+      preserve_spaces: true
+      preserve_punctuation: true
+
+evaluation:
+  params:
+    max_tokens: 64  # Short responses for smoke test
+    temperature: 0.0
+    top_p: 1.0
+    stop_sequences: ["\n", ".", "!"]
+  
+  metrics:
+    - "accuracy"
+    - "rrs"  # Relative Retention Score
+    - "ldc"  # Language Dependency Coefficient
+
+db:
+  uri: "sqlite:///db/smoke_test.db"
+  batch_size: 50
+
+output:
+  directory: "results/smoke_test"
+  save_predictions: true
+  save_metrics: true
+  plot_formats: ["png"]
+  export_formats: ["json", "csv"]
+
+# Smoke test specific constraints
+smoke_test:
+  max_items_per_dataset: 20
+  max_models_total: 4
+  timeout_minutes: 10
+  budget_buffer: 0.2  # 20% buffer for cost estimates
+  
+  validation:
+    require_db_population: true
+    require_plot_generation: true
+    require_metric_computation: true
+    min_success_rate: 0.8  # 80% of evaluations must succeed
+
+  performance_targets:
+    max_execution_time_seconds: 600  # 10 minutes
+    min_evaluations_per_second: 0.1
+    max_cost_per_evaluation: 0.01   # $0.01 per evaluation

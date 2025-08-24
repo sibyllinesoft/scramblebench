@@ -1,0 +1,41 @@
+datasets:
+- name: benchmark_1
+  path: data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+  sample_size: 3
+db:
+  uri: db/scramblebench.duckdb
+evaluation:
+  params:
+    max_tokens: 256
+    temperature: 0.0
+    top_p: 1.0
+  prompting:
+    stop:
+    - \n\n
+    - '###'
+    system: You are a helpful assistant.
+    template: 'Q: {question}\nA:'
+  scoring:
+    key: answer
+    mode: exact_or_regex
+logging:
+  save_completions: true
+  save_prompts: true
+  token_stats: true
+  tokenizer_perturbation: true
+models:
+  provider_groups:
+  - list:
+    - gemma3:270m
+    name: ollama_group
+    provider: ollama
+run:
+  concurrency: 1
+  max_cost_usd: 50.0
+  retry:
+    backoff: exponential
+    max_attempts: 3
+  run_id: ollama_gemma_test
+  seed: 1
+transforms:
+- kind: original

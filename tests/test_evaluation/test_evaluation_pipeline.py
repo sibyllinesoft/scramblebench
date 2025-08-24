@@ -10,9 +10,8 @@ from unittest.mock import Mock, patch, AsyncMock
 import tempfile
 import pandas as pd
 
-from scramblebench.evaluation.config import (
-    EvaluationConfig, ModelConfig, TransformationConfig,
-    ModelProvider, TransformationType, EvaluationMode
+from scramblebench.core.unified_config import (
+    EvaluationConfig, ModelConfig, TransformationConfig
 )
 from scramblebench.evaluation.transformation_pipeline import (
     TransformationPipeline, TransformationResult, TransformationSet

@@ -1,0 +1,52 @@
+# ScrambleBench RepomixIgnore - Cleaned for Public Release
+# Focus on core implementation in src/ and essential configs
+
+# Data directories (large datasets not essential for code analysis)
+data/benchmarks/collected/
+data/cache/
+data/languages/
+
+# Database files (structure preserved in alembic/, data not needed)
+db/
+*.db
+*.sqlite*
+
+# Documentation (comprehensive but not core to code analysis)
+docs/
+CLEANUP_REPORT.md
+RELEASE_READY_REPORT.md
+TODO.md
+
+# Development and analysis tooling (keep core package code)
+research_dashboard/
+visualizations/
+schema/
+examples/orm_usage_example.py
+
+# Configuration examples (keep core configs/ but skip evaluation examples)
+configs/evaluation/
+configs/experiments/
+
+# Build and setup scripts (not core implementation)
+scripts/
+install-s8-deps.sh
+run_benchmarks.sh
+run_contamination_detection.sh
+requirements-s8.txt
+repomix.config.json
+
+# Package metadata and tooling configs (important but not implementation)
+pyproject.toml
+pytest.ini
+alembic.ini
+alembic_models.py
+license-header.txt
+
+# Temporary and generated files
+*.log
+*.tmp
+*.cache
+__pycache__/
+.pytest_cache/
+
+# Focus on core implementation: src/scramblebench/ and tests/

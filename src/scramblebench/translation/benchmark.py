@@ -17,7 +17,7 @@ from scramblebench.translation.language_generator import (
     LanguageGenerator, ConstructedLanguage, LanguageType
 )
 from scramblebench.translation.translator import ProblemTranslator, TranslatedProblem
-from scramblebench.utils.config import Config
+from ..core.unified_config import ScrambleBenchConfig
 from scramblebench.utils.data_loader import DataLoader
 from scramblebench.llm.model_adapter import ModelAdapter
 from scramblebench.core.data_extractors import ProblemTextExtractor, AnswerExtractor
@@ -38,7 +38,7 @@ class TranslationBenchmark(BaseBenchmark):
         source_dataset: str,
         language_type: LanguageType = LanguageType.SUBSTITUTION,
         language_complexity: int = 5,
-        config: Optional[Config] = None,
+        config: Optional[ScrambleBenchConfig] = None,
         logger: Optional[logging.Logger] = None
     ):
         """

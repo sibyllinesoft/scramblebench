@@ -1,0 +1,70 @@
+experiment_name: ollama_preliminary
+description: Preliminary benchmarks using small Ollama models for local testing
+mode: accuracy
+
+# Input configuration - using small datasets for quick preliminary results
+benchmark_paths:
+  - data/benchmarks/collected/01_logic_reasoning/easy/collected_samples.json
+  - data/benchmarks/collected/02_mathematical_reasoning/easy/collected_samples.json
+
+output_dir: results
+
+# Ollama models for preliminary testing (small, fast models)
+models:
+  # Ultra-fast model for quick iteration
+  - name: llama3.2:1b
+    provider: ollama
+    temperature: 0.0  # Deterministic for reproducible results
+    max_tokens: 512   # Sufficient for most benchmark answers
+    timeout: 180      # Allow time for local inference
+    rate_limit: null  # No rate limiting for local models
+    
+  # Balanced model for better quality
+  - name: phi3:3.8b
+    provider: ollama
+    temperature: 0.0
+    max_tokens: 512
+    timeout: 180
+    rate_limit: null
+    
+  # Alternative efficient model
+  - name: gemma2:2b
+    provider: ollama
+    temperature: 0.0
+    max_tokens: 512
+    timeout: 180
+    rate_limit: null
+
+# Transformation settings (minimal for preliminary testing)
+transformations:
+  enabled_types:
+    - language_translation
+  
+  # Language settings - using simple constructed languages
+  languages:
+    - constructed_agglutinative_1
+    - constructed_basic_1
+  language_complexity: 2  # Lower complexity for faster processing
+  
+  # General settings
+  seed: 42
+  batch_size: 5
+
+# Evaluation settings (optimized for preliminary testing)
+max_samples: 20           # Small sample size for quick results
+sample_seed: 42           # Reproducible sampling
+max_concurrent_requests: 1  # Sequential processing for local inference
+save_interval: 10         # Frequent saves in case of issues
+
+# Analysis settings (minimal for speed)
+generate_plots: true      # Generate basic plots
+calculate_significance: false  # Skip statistical tests for preliminary results
+
+# Ollama-specific notes:
+# 1. Ensure Ollama is running: `ollama serve`
+# 2. Pull required models:
+#    - ollama pull llama3.2:1b
+#    - ollama pull phi3:3.8b  
+#    - ollama pull gemma2:2b
+# 3. Models will be evaluated sequentially due to local inference constraints
+# 4. First run may be slower due to model loading

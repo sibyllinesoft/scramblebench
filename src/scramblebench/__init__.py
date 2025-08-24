@@ -22,7 +22,10 @@ from scramblebench.core.reporter import Reporter
 from scramblebench.translation.benchmark import TranslationBenchmark
 from scramblebench.longcontext.benchmark import LongContextBenchmark
 from scramblebench.llm.model_interface import ModelInterface
-from scramblebench.utils.config import Config
+# Import unified configuration system
+from scramblebench.core.unified_config import ScrambleBenchConfig
+# Backward compatibility alias
+Config = ScrambleBenchConfig
 
 __all__ = [
     "BaseBenchmark",
@@ -31,5 +34,6 @@ __all__ = [
     "TranslationBenchmark",
     "LongContextBenchmark",
     "ModelInterface",
-    "Config",
+    "Config",  # Backward compatibility
+    "ScrambleBenchConfig",  # New unified config system
 ]

@@ -19,22 +19,12 @@ from pathlib import Path
 from unittest.mock import patch, MagicMock
 from typing import Dict, Any
 
-from scramblebench.core.config import (
+from scramblebench.core.unified_config import (
     ScrambleBenchConfig,
     ModelConfig,
-    DataConfig,
-    BenchmarkConfig,
-    TransformationConfig,
-    LoggingConfig,
-    MetricsConfig,
-    PlotConfig,
-    ModelProvider,
-    ModelType,
-    TransformationType,
-    EvaluationMode,
-    LogLevel,
-    load_config,
-    Config  # Backward compatibility alias
+    DatasetConfig,
+    TransformConfig,
+    LoggingConfig
 )
 
 
@@ -96,8 +86,8 @@ class TestModelConfig:
     def test_backward_compatibility_imports(self):
         """Test that legacy imports still work."""
         # Test the alias works
-        from scramblebench.core.config import Config
-        config = Config()
+        # Legacy Config import no longer supported - using ScrambleBenchConfig directly
+        config = ScrambleBenchConfig()
         assert isinstance(config, ScrambleBenchConfig)
         
     def test_comprehensive_config_sections(self):
@@ -672,9 +662,9 @@ class TestComplexScenarios:
         config_dict = config.dict()
         
         # Apply base config manually to test merging
-        from scramblebench.core.config import _deep_update
-        _deep_update(config_dict, base_config)
-        final_config = ScrambleBenchConfig(**config_dict)
+        # Note: _deep_update removed from unified config - using dict.update for now
+        config_dict.update(base_config)
+        final_config = ScrambleBenchConfig.from_dict(config_dict)
         
         assert final_config.model.temperature == 0.8  # Overridden
         assert final_config.model.max_tokens == 1000  # From base

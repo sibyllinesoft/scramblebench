@@ -643,3 +643,237 @@ def validate_and_report(
             f.write(json.dumps(result.to_dict(), indent=2))
     
     return result.passed
+
+
+# ============================================================================
+# Enhanced Validation for Smoke Tests and Scaling Survey
+# ============================================================================
+
+class DatabaseValidator:
+    """Database-specific validation for ScrambleBench results."""
+    
+    def __init__(self, db_path: Path, logger: Optional[logging.Logger] = None):
+        self.db_path = db_path
+        self.logger = logger or get_logger(__name__)
+        self.issues: List[ValidationIssue] = []
+    
+    def validate_database_schema(self) -> None:
+        """Validate database schema and tables."""
+        try:
+            from scramblebench.core.database import ScrambleBenchDatabase
+            
+            db = ScrambleBenchDatabase(self.db_path)
+            db.ensure_tables_exist()
+            
+            # Check if all expected tables exist
+            expected_tables = ['runs', 'evaluations', 'aggregates', 'items']
+            
+            with db._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                existing_tables = {row[0] for row in cursor.fetchall()}
+            
+            missing_tables = set(expected_tables) - existing_tables
+            if missing_tables:
+                self.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.CRITICAL,
+                    category="database_schema",
+                    message=f"Missing database tables: {missing_tables}",
+                    details={'missing': list(missing_tables), 'existing': list(existing_tables)},
+                    fix_suggestion="Run database initialization or check database setup"
+                ))
+            
+        except Exception as e:
+            self.issues.append(ValidationIssue(
+                severity=ValidationSeverity.CRITICAL,
+                category="database_connection",
+                message=f"Cannot connect to database: {str(e)}",
+                details={'db_path': str(self.db_path), 'error': str(e)},
+                fix_suggestion="Check database file permissions and path"
+            ))
+    
+    def validate_run_data(self, run_id: str) -> None:
+        """Validate specific run data completeness."""
+        try:
+            from scramblebench.core.database import ScrambleBenchDatabase
+            
+            db = ScrambleBenchDatabase(self.db_path)
+            
+            # Check if run exists
+            with db._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT COUNT(*) FROM runs WHERE run_id = ?", (run_id,))
+                run_exists = cursor.fetchone()[0] > 0
+            
+            if not run_exists:
+                self.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.CRITICAL,
+                    category="run_data",
+                    message=f"Run {run_id} not found in database",
+                    details={'run_id': run_id},
+                    fix_suggestion="Verify run ID or check if evaluation completed"
+                ))
+                return
+            
+            # Check evaluation data
+            with db._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT COUNT(*) FROM evaluations WHERE run_id = ?", (run_id,))
+                eval_count = cursor.fetchone()[0]
+            
+            if eval_count == 0:
+                self.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.CRITICAL,
+                    category="run_data",
+                    message=f"No evaluation data found for run {run_id}",
+                    details={'run_id': run_id, 'evaluation_count': eval_count},
+                    fix_suggestion="Check if evaluation process completed successfully"
+                ))
+            else:
+                self.logger.debug(f"Found {eval_count} evaluations for run {run_id}")
+        
+        except Exception as e:
+            self.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                category="run_validation",
+                message=f"Cannot validate run data: {str(e)}",
+                details={'run_id': run_id, 'error': str(e)},
+                fix_suggestion="Check database connectivity and schema"
+            ))
+
+
+class SmokeTestValidator:
+    """Specialized validator for smoke test execution."""
+    
+    def __init__(self, logger: Optional[logging.Logger] = None):
+        self.logger = logger or get_logger(__name__)
+        self.issues: List[ValidationIssue] = []
+    
+    def validate_smoke_config(self, smoke_config_dict: Dict[str, Any]) -> None:
+        """Validate smoke test configuration."""
+        required_fields = ['run', 'datasets', 'transforms', 'models']
+        
+        for field in required_fields:
+            if field not in smoke_config_dict:
+                self.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.CRITICAL,
+                    category="smoke_config",
+                    message=f"Missing required configuration field: {field}",
+                    details={'missing_field': field},
+                    fix_suggestion=f"Add {field} section to configuration"
+                ))
+        
+        # Validate cost limits
+        run_config = smoke_config_dict.get('run', {})
+        max_cost = run_config.get('max_cost_usd', 0)
+        
+        if max_cost > 10.0:  # Smoke tests should be cheap
+            self.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                category="smoke_config",
+                message=f"High cost limit for smoke test: ${max_cost}",
+                details={'max_cost_usd': max_cost},
+                fix_suggestion="Consider reducing max_cost_usd for smoke tests (<$5)"
+            ))
+        
+        # Validate dataset sample sizes
+        datasets = smoke_config_dict.get('datasets', [])
+        for dataset in datasets:
+            sample_size = dataset.get('sample_size', 0)
+            if sample_size > 50:  # Smoke tests should be small
+                self.issues.append(ValidationIssue(
+                    severity=ValidationSeverity.WARNING,
+                    category="smoke_config",
+                    message=f"Large sample size for smoke test: {sample_size} in {dataset.get('name', 'unknown')}",
+                    details={'dataset': dataset.get('name'), 'sample_size': sample_size},
+                    fix_suggestion="Reduce sample_size for faster smoke tests (<20)"
+                ))
+    
+    def validate_smoke_performance(self, execution_time: float, target_time: float) -> None:
+        """Validate smoke test performance metrics."""
+        if execution_time > target_time:
+            self.issues.append(ValidationIssue(
+                severity=ValidationSeverity.CRITICAL,
+                category="performance",
+                message=f"Smoke test exceeded time limit: {execution_time:.1f}s > {target_time:.1f}s",
+                details={'execution_time': execution_time, 'target_time': target_time},
+                fix_suggestion="Optimize evaluation pipeline or reduce test scope"
+            ))
+        elif execution_time > target_time * 0.8:  # Warning if close to limit
+            self.issues.append(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                category="performance",
+                message=f"Smoke test approaching time limit: {execution_time:.1f}s (limit: {target_time:.1f}s)",
+                details={'execution_time': execution_time, 'target_time': target_time},
+                fix_suggestion="Consider optimizing for better performance margin"
+            ))
+
+
+def run_comprehensive_smoke_validation(
+    config_path: Optional[Path] = None,
+    db_path: Optional[Path] = None,
+    run_id: Optional[str] = None,
+    execution_time: Optional[float] = None,
+    target_time: float = 600.0  # 10 minutes
+) -> ValidationResult:
+    """Run comprehensive validation for smoke tests."""
+    all_issues = []
+    
+    # System validation
+    system_validator = SystemValidator()
+    system_validator.validate_python_version()
+    system_validator.validate_platform()
+    all_issues.extend(system_validator.issues)
+    
+    # Dependencies
+    dep_validator = DependencyValidator()
+    dep_validator.validate_required_packages()
+    all_issues.extend(dep_validator.issues)
+    
+    # Configuration validation
+    if config_path and config_path.exists():
+        try:
+            import yaml
+            with open(config_path, 'r') as f:
+                config_data = yaml.safe_load(f)
+            
+            smoke_validator = SmokeTestValidator()
+            smoke_validator.validate_smoke_config(config_data)
+            all_issues.extend(smoke_validator.issues)
+            
+        except Exception as e:
+            all_issues.append(ValidationIssue(
+                severity=ValidationSeverity.CRITICAL,
+                category="config_loading",
+                message=f"Failed to load configuration: {str(e)}",
+                details={'config_path': str(config_path), 'error': str(e)},
+                fix_suggestion="Check configuration file syntax and permissions"
+            ))
+    
+    # Database validation
+    if db_path:
+        db_validator = DatabaseValidator(db_path)
+        db_validator.validate_database_schema()
+        if run_id:
+            db_validator.validate_run_data(run_id)
+        all_issues.extend(db_validator.issues)
+    
+    # Performance validation
+    if execution_time is not None:
+        smoke_validator = SmokeTestValidator()
+        smoke_validator.validate_smoke_performance(execution_time, target_time)
+        all_issues.extend(smoke_validator.issues)
+    
+    # Create summary
+    critical_count = len([i for i in all_issues if i.severity == ValidationSeverity.CRITICAL])
+    warning_count = len([i for i in all_issues if i.severity == ValidationSeverity.WARNING])
+    
+    return ValidationResult(
+        passed=critical_count == 0,
+        issues=all_issues,
+        summary={
+            'critical_issues': critical_count,
+            'warnings': warning_count,
+            'total_checks': len(all_issues)
+        }
+    )

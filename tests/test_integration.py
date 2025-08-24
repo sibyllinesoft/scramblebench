@@ -19,7 +19,7 @@ from scramblebench.translation.benchmark import TranslationBenchmark
 from scramblebench.longcontext.benchmark import LongContextBenchmark
 from scramblebench.translation.language_generator import LanguageGenerator, LanguageType
 from scramblebench.llm.model_interface import DummyModel, ModelConfig
-from scramblebench.utils.config import Config
+from scramblebench.core.unified_config import ScrambleBenchConfig
 from scramblebench.utils.data_loader import DataLoader
 
 
@@ -474,7 +474,7 @@ class TestFullPipelineIntegration:
     def test_evaluation_pipeline_integration(self, mock_runner_class):
         """Test complete evaluation pipeline integration."""
         from scramblebench.evaluation.runner import EvaluationRunner
-        from scramblebench.evaluation.config import EvaluationConfig, ModelConfig, ModelProvider, TransformationConfig
+        from scramblebench.core.unified_config import EvaluationConfig, ModelConfig, TransformationConfig
         
         # Create test data
         test_data = [

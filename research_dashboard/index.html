@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Dependency Atlas - Research Dashboard</title>
+    
+    <!-- Academic Publication Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- D3.js and Plotly.js for advanced visualizations -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    
+    <!-- Academic-grade math rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Dashboard styles -->
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/academic.css">
+    <link rel="stylesheet" href="styles/visualizations.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1>Language Dependency Atlas</h1>
+            <p class="subtitle">Research Visualization Dashboard</p>
+            <div class="header-controls">
+                <button id="export-figures-btn" class="btn btn-primary">Export Publication Figures</button>
+                <button id="load-data-btn" class="btn btn-secondary">Load Research Data</button>
+                <button id="settings-btn" class="btn btn-tertiary">Settings</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar">
+        <div class="nav-section">
+            <h3>Core Visualizations</h3>
+            <ul>
+                <li><a href="#surface-plot" class="nav-link active">Language Dependency Surface</a></li>
+                <li><a href="#threshold-analysis" class="nav-link">Threshold Discovery</a></li>
+                <li><a href="#degradation-curves" class="nav-link">Performance Degradation</a></li>
+                <li><a href="#model-comparison" class="nav-link">Model Comparison</a></li>
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Domain Analysis</h3>
+            <ul>
+                <li><a href="#domain-heatmap" class="nav-link">Domain Dependency Heatmap</a></li>
+                <li><a href="#cognitive-load" class="nav-link">Cognitive Load Paradox</a></li>
+                <li><a href="#failure-modes" class="nav-link">Failure Mode Classification</a></li>
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <h3>Statistical Analysis</h3>
+            <ul>
+                <li><a href="#scaling-laws" class="nav-link">Scaling Law Analysis</a></li>
+                <li><a href="#significance-tests" class="nav-link">Statistical Significance</a></li>
+                <li><a href="#effect-sizes" class="nav-link">Effect Size Distribution</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <!-- Data Loading Status -->
+        <div id="data-status" class="status-panel">
+            <div class="status-indicator">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">No data loaded</span>
+            </div>
+            <div class="data-summary" id="data-summary"></div>
+        </div>
+
+        <!-- Visualization Panels -->
+        <div class="viz-container">
+            <!-- Language Dependency Surface -->
+            <section id="surface-plot" class="viz-panel active">
+                <div class="panel-header">
+                    <h2>Language Dependency Surface</h2>
+                    <p class="panel-description">
+                        3D visualization of reasoning robustness across model parameters and scrambling intensities
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Model Family:
+                            <select id="surface-model-filter">
+                                <option value="all">All Models</option>
+                                <option value="gemma">Gemma</option>
+                                <option value="llama">LLaMA</option>
+                                <option value="gpt">GPT</option>
+                            </select>
+                        </label>
+                        <label>
+                            Domain:
+                            <select id="surface-domain-filter">
+                                <option value="all">All Domains</option>
+                                <option value="arithmetic">Arithmetic</option>
+                                <option value="logic">Logic</option>
+                                <option value="reading">Reading Comprehension</option>
+                            </select>
+                        </label>
+                        <button class="export-btn" data-viz="surface-plot">Export SVG</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div id="surface-plot-container" class="plotly-container"></div>
+                    <div class="viz-insights">
+                        <h4>Key Insights</h4>
+                        <ul id="surface-insights">
+                            <li>Loading insights...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Threshold Discovery -->
+            <section id="threshold-analysis" class="viz-panel">
+                <div class="panel-header">
+                    <h2>Threshold Discovery Analysis</h2>
+                    <p class="panel-description">
+                        Critical parameter boundaries where language dependency emerges (25-30B parameter breakthrough)
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Threshold Type:
+                            <select id="threshold-type">
+                                <option value="performance">Performance Drop</option>
+                                <option value="dependency">Language Dependency</option>
+                                <option value="robustness">Robustness Score</option>
+                            </select>
+                        </label>
+                        <label>
+                            Threshold Sensitivity:
+                            <input type="range" id="threshold-sensitivity" min="0.1" max="1.0" step="0.1" value="0.5">
+                            <span id="threshold-value">50%</span>
+                        </label>
+                        <button class="export-btn" data-viz="threshold-analysis">Export PNG</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div id="threshold-plot-container" class="plotly-container"></div>
+                    <div class="threshold-stats">
+                        <div class="stat-card">
+                            <h4>Critical Threshold</h4>
+                            <span class="stat-value" id="critical-threshold">--</span>
+                            <span class="stat-unit">B parameters</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Breakthrough Confidence</h4>
+                            <span class="stat-value" id="breakthrough-confidence">--</span>
+                            <span class="stat-unit">%</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Effect Size</h4>
+                            <span class="stat-value" id="effect-size">--</span>
+                            <span class="stat-unit">Cohen's d</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Performance Degradation Curves -->
+            <section id="degradation-curves" class="viz-panel">
+                <div class="panel-header">
+                    <h2>Performance Degradation Curves</h2>
+                    <p class="panel-description">
+                        Model performance across scrambling intensities by family and domain
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Visualization Type:
+                            <select id="degradation-type">
+                                <option value="curves">Degradation Curves</option>
+                                <option value="heatmap">Performance Heatmap</option>
+                                <option value="violin">Distribution Violin</option>
+                            </select>
+                        </label>
+                        <label>
+                            Show Confidence Intervals:
+                            <input type="checkbox" id="show-confidence" checked>
+                        </label>
+                        <button class="export-btn" data-viz="degradation-curves">Export PDF</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div id="degradation-plot-container" class="plotly-container"></div>
+                </div>
+            </section>
+
+            <!-- Model Comparison Matrix -->
+            <section id="model-comparison" class="viz-panel">
+                <div class="panel-header">
+                    <h2>Model Family Comparison</h2>
+                    <p class="panel-description">
+                        Comparative analysis of architectural differences in language dependency
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Comparison Metric:
+                            <select id="comparison-metric">
+                                <option value="dependency">Language Dependency</option>
+                                <option value="robustness">Robustness Score</option>
+                                <option value="threshold">Threshold Values</option>
+                            </select>
+                        </label>
+                        <label>
+                            Statistical Test:
+                            <select id="statistical-test">
+                                <option value="anova">ANOVA</option>
+                                <option value="tukey">Tukey HSD</option>
+                                <option value="bonferroni">Bonferroni</option>
+                            </select>
+                        </label>
+                        <button class="export-btn" data-viz="model-comparison">Export High-DPI</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div class="comparison-grid">
+                        <div id="model-matrix-container" class="plotly-container"></div>
+                        <div class="statistical-results">
+                            <h4>Statistical Analysis</h4>
+                            <div id="statistical-summary"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Domain Dependency Heatmap -->
+            <section id="domain-heatmap" class="viz-panel">
+                <div class="panel-header">
+                    <h2>Domain-Specific Dependency Analysis</h2>
+                    <p class="panel-description">
+                        Language dependency profiles across cognitive domains and reasoning complexity
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Aggregation Level:
+                            <select id="domain-aggregation">
+                                <option value="domain">By Domain</option>
+                                <option value="complexity">By Complexity</option>
+                                <option value="steps">By Reasoning Steps</option>
+                            </select>
+                        </label>
+                        <label>
+                            Color Scale:
+                            <select id="heatmap-scale">
+                                <option value="viridis">Viridis</option>
+                                <option value="plasma">Plasma</option>
+                                <option value="rdylgn">Red-Yellow-Green</option>
+                            </select>
+                        </label>
+                        <button class="export-btn" data-viz="domain-heatmap">Export SVG</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div id="domain-heatmap-container" class="plotly-container"></div>
+                    <div class="domain-analysis">
+                        <h4>Domain Rankings</h4>
+                        <div id="domain-rankings"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cognitive Load Paradox -->
+            <section id="cognitive-load" class="viz-panel">
+                <div class="panel-header">
+                    <h2>Cognitive Load Paradox</h2>
+                    <p class="panel-description">
+                        Non-linear performance patterns revealing counterintuitive cognitive load relationships
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Load Category:
+                            <select id="load-category">
+                                <option value="all">All Categories</option>
+                                <option value="minimal">Minimal Load</option>
+                                <option value="moderate">Moderate Load</option>
+                                <option value="heavy">Heavy Load</option>
+                            </select>
+                        </label>
+                        <button class="export-btn" data-viz="cognitive-load">Export PNG</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div id="cognitive-load-container" class="plotly-container"></div>
+                    <div class="paradox-explanation">
+                        <h4>The Paradox</h4>
+                        <p>Models sometimes perform better on scrambled high-load tasks than low-load tasks, 
+                           suggesting reliance on linguistic cues rather than reasoning.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scaling Laws Analysis -->
+            <section id="scaling-laws" class="viz-panel">
+                <div class="panel-header">
+                    <h2>Scaling Law Analysis</h2>
+                    <p class="panel-description">
+                        Log parameters vs language dependency coefficient with power law fitting
+                    </p>
+                    <div class="panel-controls">
+                        <label>
+                            Scale Type:
+                            <select id="scale-type">
+                                <option value="log-log">Log-Log</option>
+                                <option value="semi-log">Semi-Log</option>
+                                <option value="linear">Linear</option>
+                            </select>
+                        </label>
+                        <label>
+                            Fit Model:
+                            <select id="fit-model">
+                                <option value="power">Power Law</option>
+                                <option value="exponential">Exponential</option>
+                                <option value="polynomial">Polynomial</option>
+                            </select>
+                        </label>
+                        <button class="export-btn" data-viz="scaling-laws">Export PDF</button>
+                    </div>
+                </div>
+                <div class="viz-content">
+                    <div id="scaling-laws-container" class="plotly-container"></div>
+                    <div class="scaling-results">
+                        <h4>Fitted Parameters</h4>
+                        <div id="fit-parameters"></div>
+                        <div class="equation-display">
+                            <span id="scaling-equation"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Export Modal -->
+    <div id="export-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Export Publication Figures</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <h4>Export Format</h4>
+                    <label><input type="radio" name="export-format" value="svg" checked> SVG (Vector)</label>
+                    <label><input type="radio" name="export-format" value="pdf"> PDF (Publication)</label>
+                    <label><input type="radio" name="export-format" value="png"> PNG (High-DPI)</label>
+                    
+                    <h4>Resolution (PNG only)</h4>
+                    <select id="png-resolution">
+                        <option value="300">300 DPI</option>
+                        <option value="600">600 DPI</option>
+                        <option value="1200">1200 DPI</option>
+                    </select>
+                    
+                    <h4>Figure Selection</h4>
+                    <div class="figure-checklist">
+                        <label><input type="checkbox" value="surface-plot" checked> Language Dependency Surface</label>
+                        <label><input type="checkbox" value="threshold-analysis" checked> Threshold Discovery</label>
+                        <label><input type="checkbox" value="degradation-curves" checked> Performance Degradation</label>
+                        <label><input type="checkbox" value="model-comparison" checked> Model Comparison</label>
+                        <label><input type="checkbox" value="domain-heatmap" checked> Domain Heatmap</label>
+                        <label><input type="checkbox" value="scaling-laws" checked> Scaling Laws</label>
+                    </div>
+                    
+                    <h4>Academic Options</h4>
+                    <label><input type="checkbox" id="include-captions" checked> Include Figure Captions</label>
+                    <label><input type="checkbox" id="academic-formatting" checked> Academic Formatting</label>
+                    <label><input type="checkbox" id="color-blind-safe" checked> Color-blind Safe Palette</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Cancel</button>
+                <button class="btn btn-primary" id="export-execute">Export Figures</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Dashboard Settings</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Data Sources</h4>
+                    <label>
+                        SQLite Database Path:
+                        <input type="text" id="db-path" placeholder="Path to research database">
+                    </label>
+                    <label>
+                        Auto-refresh Interval:
+                        <select id="refresh-interval">
+                            <option value="0">Manual Only</option>
+                            <option value="30">30 seconds</option>
+                            <option value="60">1 minute</option>
+                            <option value="300">5 minutes</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="settings-section">
+                    <h4>Visualization Preferences</h4>
+                    <label>
+                        Theme:
+                        <select id="theme-select">
+                            <option value="academic">Academic</option>
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                        </select>
+                    </label>
+                    <label>
+                        Animation Speed:
+                        <input type="range" id="animation-speed" min="0" max="2" step="0.5" value="1">
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Cancel</button>
+                <button class="btn btn-primary" id="settings-save">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Loading research data...</p>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/data/dataLoader.js"></script>
+    <script src="js/data/dataProcessor.js"></script>
+    <script src="js/visualizations/surfacePlot.js"></script>
+    <script src="js/visualizations/thresholdAnalysis.js"></script>
+    <script src="js/visualizations/degradationCurves.js"></script>
+    <script src="js/visualizations/modelComparison.js"></script>
+    <script src="js/visualizations/domainHeatmap.js"></script>
+    <script src="js/visualizations/cognitiveLoad.js"></script>
+    <script src="js/visualizations/scalingLaws.js"></script>
+    <script src="js/utils/statistics.js"></script>
+    <script src="js/utils/export.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

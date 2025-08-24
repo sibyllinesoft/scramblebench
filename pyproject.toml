@@ -5,11 +5,15 @@ build-backend = "hatchling.build"
 [project]
 name = "scramblebench"
 version = "0.1.0"
-description = "LLM benchmarking toolkit with translation and long context capabilities"
+description = "Contamination-resistant LLM evaluation toolkit with translation and long context benchmarking"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
     {name = "Nathan Rice", email = "nathan.alexander.rice@gmail.com"}
+]
+keywords = [
+    "llm", "evaluation", "benchmarking", "contamination", "ai", "nlp", 
+    "language-models", "testing", "research", "translation", "longcontext"
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -23,6 +27,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Testing",
+    "Topic :: Text Processing :: Linguistic",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Typing :: Typed",
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -47,6 +55,10 @@ dependencies = [
     "scikit-learn>=1.3.0",
     "scipy>=1.11.0",
     "pyarrow>=12.0.0",
+    "duckdb>=0.9.0",
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    "streamlit>=1.28.0",
 ]
 
 [project.optional-dependencies]

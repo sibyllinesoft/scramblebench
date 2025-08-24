@@ -26,7 +26,7 @@ from scramblebench.translation.language_generator import (
 )
 from scramblebench.translation.translator import ProblemTranslator
 from scramblebench.core.evaluator import EvaluationResult, EvaluationMode
-from scramblebench.utils.config import Config
+from scramblebench.core.unified_config import ScrambleBenchConfig
 
 
 class MockModel:

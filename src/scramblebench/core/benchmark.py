@@ -49,7 +49,7 @@ from pathlib import Path
 import time
 import logging
 
-from scramblebench.utils.config import Config
+from .unified_config import ScrambleBenchConfig
 
 
 @dataclass
@@ -129,7 +129,7 @@ class BaseBenchmark(ABC):
     :param name: Human-readable name of the benchmark
     :type name: str
     :param config: Configuration object for benchmark settings
-    :type config: Optional[Config]
+    :type config: Optional[ScrambleBenchConfig]
     :param logger: Logger instance for this benchmark
     :type logger: Optional[logging.Logger]
     
@@ -177,7 +177,7 @@ class BaseBenchmark(ABC):
     def __init__(
         self, 
         name: str, 
-        config: Optional[Config] = None,
+        config: Optional[ScrambleBenchConfig] = None,
         logger: Optional[logging.Logger] = None
     ):
         """
@@ -186,7 +186,7 @@ class BaseBenchmark(ABC):
         :param name: Name of this benchmark instance
         :type name: str
         :param config: Configuration object (creates default if None)
-        :type config: Optional[Config]
+        :type config: Optional[ScrambleBenchConfig]
         :param logger: Logger instance (creates default if None)  
         :type logger: Optional[logging.Logger]
         

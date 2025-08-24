@@ -198,7 +198,7 @@ For more sophisticated evaluations, use detailed configuration:
 
 .. code-block:: python
 
-   from scramblebench.core.config import BenchmarkConfig
+   from scramblebench.core.unified_config import ScrambleBenchConfig
    from scramblebench.translation.language_generator import LanguageConfig
 
    # Create language configuration
