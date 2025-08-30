@@ -364,3 +364,29 @@ language_dependency_atlas/
 data/reports/
 data/results/
 results/
+
+# Progress reports and cleanup documentation (development artifacts)
+*_REPORT.md
+*REPORT.md
+*_SUMMARY.md
+*SUMMARY.md
+CLEANUP_*.md
+RELEASE_*.md
+*_PREPARATION.md
+TODO.md
+
+# Generated analysis artifacts
+*_analysis.json
+scribe_analysis.json
+scribe.config.json
+.scribeignore
+
+# Test and preprocessing scripts (temporary)
+test_scribe_*.py
+scribe_preprocessor.py
+*_preprocessor.py
+*_preprocessing.py
+
+# Deprecated configuration files
+.repomixignore
+repomix.config.json
